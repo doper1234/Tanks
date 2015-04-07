@@ -18,7 +18,6 @@ public class Enemy extends Tank implements ActionListener {
 
     Timer timer;
     Random move = new Random();
-    private boolean newDirection;
     private int ticks;
     int level = 1;
 
@@ -34,19 +33,19 @@ public class Enemy extends Tank implements ActionListener {
         direction = move.nextInt(4) + 1;
         if (direction == 4) {
             dx = 1;
-            movingImage(ticks, right, right2);
+            //right
 
         } else if (direction == 3) {
             dx = -1;
-            movingImage(ticks, left, left2);
+            //left
 
         } else if (direction == 2) {
             dy = 1;
-            movingImage(ticks, down, down2);
+            //down
 
         } else if (direction == 1) {
-            dy = -1;
-            movingImage(ticks, up, up2);
+            dy = -1; // up
+            
 
         }
 
@@ -63,6 +62,18 @@ public class Enemy extends Tank implements ActionListener {
             dy = 0;
             moveEnemy();
 
+        }
+        if (direction == 4) {
+            movingImage(ticks, right, right2);
+
+        } else if (direction == 3) {
+            movingImage(ticks, left, left2);
+
+        } else if (direction == 2) {
+            movingImage(ticks, down, down2);
+
+        } else if (direction == 1) {
+            movingImage(ticks, up, up2);
         }
 
         ticks++;
