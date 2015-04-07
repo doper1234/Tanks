@@ -5,9 +5,7 @@
  */
 
 package tanks;
-import java.awt.Image;
 import java.awt.event.*;
-import java.util.ArrayList;
 import javax.swing.*;
 /**
  *
