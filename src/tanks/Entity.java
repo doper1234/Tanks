@@ -58,7 +58,7 @@ public class Entity {
     
     public Rectangle getBounds(){
         
-        return new Rectangle(x,y, 48, 48);
+        return new Rectangle(x,y, 42, 42);
     }
     
    public void checkLocation(){

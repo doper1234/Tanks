@@ -83,9 +83,8 @@ public abstract class Tank extends Entity {
 
     public void fire(int level) {
             Bullet bullet = new Bullet(x, y, direction, 1);
-            //if(level == 1 && bullets.size() <2){
-                bullets.add(bullet);
-            //}
+            bullets.add(bullet);
+            
             //if(level > 1 && bullets.size() <2){
               //  bullets.add(bullet);
             //}
