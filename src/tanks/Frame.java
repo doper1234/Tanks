@@ -14,7 +14,6 @@ public class Frame {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
         JFrame frame = new JFrame("Tanks");
         frame.setUndecorated(true);
         frame.add(new Board());

@@ -48,12 +48,15 @@ public class Board extends JPanel implements ActionListener {
     Timer miniExplosionTimer;
     Random rand = new Random();
     MiniExplosion mE;
-    Image flag;
+    Image eagle;
     Image steel;
     Image trees;
     Image smallBricks;
+    int input = 0;
 
     public Board() {
+        String tempInput = JOptionPane.showInputDialog("Type a map number: ");
+        input = Integer.parseInt(tempInput);
         maps = new Maps();
         powerUps[0] = new StarPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
         powerUps[1] = new GunPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
@@ -92,7 +95,7 @@ public class Board extends JPanel implements ActionListener {
         smallBricks = i6.getImage();
         background = i.getImage();
         boarder = i2.getImage();
-        flag = i3.getImage();
+        eagle = i3.getImage();
         time = new Timer(5, this);
         time.start();
         playSound("Themes");
@@ -103,7 +106,19 @@ public class Board extends JPanel implements ActionListener {
 
     public void map(Graphics g) {
         
-        int[][] currentMap = maps.getMap1();
+        int[][] currentMap;
+        if (input == 1){
+            currentMap = maps.getMap1();
+        }
+        else if (input == 2){
+            currentMap = maps.getMap2();
+        }
+        else if (input == 3){
+            currentMap = maps.getMap3();
+        }
+        else{
+            currentMap = maps.getBlankMap();
+        }
 
         for (int i = 0; i < currentMap.length; i++) {
             for (int x = 0; x < currentMap.length; x++) {
@@ -117,7 +132,7 @@ public class Board extends JPanel implements ActionListener {
                     g.drawImage(trees, x* 24 +48, i*24 + 48, null);
                 }
                 if(currentMap[i][x] == 4){
-                    g.drawImage(flag, x* 24 +48, i*24 + 48, null);
+                    g.drawImage(eagle, x* 24 +48, i*24 + 48, null);
                 }
             }
         }
@@ -195,7 +210,7 @@ public class Board extends JPanel implements ActionListener {
 
         g2d.drawImage(background, 0, 0, null);
         g2d.drawImage(boarder, 0, 0, null);
-        g2d.drawImage(flag, 748/ 2, 720 -96, null);
+        
         //paintBricks(brick, g2d);
         refreshTank(player1, g2d);
         refreshTank(player2, g2d);
