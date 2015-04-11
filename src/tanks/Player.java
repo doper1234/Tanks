@@ -19,6 +19,7 @@ public class Player extends Tank{
     int goDown;
     int shoot;
     int level = 1;
+    int lives = 2;
     public Player(int x, int y) {
         super(x, y);
         
@@ -27,6 +28,20 @@ public class Player extends Tank{
     
     public int getLevel(){
         return level;
+    }
+    
+    public int getLives(){
+        return lives;
+    }
+    
+    public void lostALife(){
+        if(lives > 0){
+            lives--;
+        }
+    }
+    
+    public void gotALife(){
+        lives++;
     }
     
     public void setLevel(int l){

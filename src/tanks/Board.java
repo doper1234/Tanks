@@ -52,12 +52,26 @@ public class Board extends JPanel implements ActionListener {
     Image steel;
     Image trees;
     Image smallBricks;
+    Image enemyIcon;
+    Image blankGrey;
+    Image zero;
+    Image one;
+    Image two;
+    Image three;
     int input = 0;
+    String tempInput;
+    int enemiesDefeated = 20;
 
     public Board() {
-        String tempInput = JOptionPane.showInputDialog("Type a map number: ");
+        do{
+        tempInput = JOptionPane.showInputDialog("Type a map number (0, 1, 2 or 3): ");
+        }while (tempInput != null && tempInput.length() == 0 && (tempInput.contains("0") || tempInput.contains("1") || tempInput.contains("2") || tempInput.contains("3")));
+        if (tempInput == null){
+            System.exit(0);
+        }
         input = Integer.parseInt(tempInput);
         maps = new Maps();
+        
         powerUps[0] = new StarPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
         powerUps[1] = new GunPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
         powerUps[2] = new LifePowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
@@ -74,6 +88,8 @@ public class Board extends JPanel implements ActionListener {
         enemies.add(enemy2);
         enemies.add(enemy3);
         enemies.add(enemy4);
+        
+        enemiesDefeated = enemiesDefeated - enemies.size();
         player1 = new Player1(768 / 4, 720 - 48);
         player2 = new Player2((768 / 4) + (768 / 2), 720 -48);
 
@@ -90,6 +106,18 @@ public class Board extends JPanel implements ActionListener {
         ImageIcon i4 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/steelblock.png");
         ImageIcon i5 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/trees.png");
         ImageIcon i6 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/smallbricks.png");
+        ImageIcon i7 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/enemyicon.png");
+        ImageIcon i8 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/blankgrey.png");
+        ImageIcon i9 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/zero.png");
+        ImageIcon i10 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/one.png");
+        ImageIcon i11 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/two.png");
+        ImageIcon i12 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/three.png");
+        zero = i9.getImage();
+        one = i10.getImage();
+        two = i11.getImage();
+        three = i12.getImage();
+        blankGrey = i8.getImage();
+        enemyIcon = i7.getImage();
         steel = i4.getImage();
         trees = i5.getImage();
         smallBricks = i6.getImage();
@@ -199,8 +227,11 @@ public class Board extends JPanel implements ActionListener {
         player1.moveY();
         player2.moveX();
         player2.moveY();
-
+        
         //map();
+        
+        
+        
         repaint();
     }
 
@@ -214,6 +245,8 @@ public class Board extends JPanel implements ActionListener {
         //paintBricks(brick, g2d);
         refreshTank(player1, g2d);
         refreshTank(player2, g2d);
+        paintLives(player1, g2d);
+        paintLives(player2, g2d);
         for (Enemy en : enemies) {
             refreshTank(en, g2d);
         }
@@ -223,8 +256,66 @@ public class Board extends JPanel implements ActionListener {
         g2d.drawImage(star3.getDomiantImage(), star3.getX(), star3.getY(), null);
         g2d.drawImage(gun.getDomiantImage(), gun.getX(), gun.getY(), null);
         g2d.drawImage(currentPowerUp.getDomiantImage(), currentPowerUp.getX(), currentPowerUp.getY(), null);
+        paintLevelNumber(g2d);
+        
+        for(int i = 0; i < enemies.size(); i ++){
+            if(i % 2 == 0){
+                g2d.drawImage(enemyIcon,  768-72 ,((i*24) +(3*24)) - (i * 12), null);
+            }
+            else{
+                g2d.drawImage(enemyIcon, 768-48 , ((i*24) +(3*24)) - ((i+1) * 12), null);
+            }
+        }
+        for(int i = 19; i >= enemies.size(); i --){
+            if(i % 2 == 0){
+                g2d.drawImage(blankGrey,  768-72 ,((i*24) +(3*24)) - (i * 12), null);
+            }
+            else{
+                g2d.drawImage(blankGrey, 768-48 , ((i*24) +(3*24)) - ((i+1) * 12), null);
+            }
+        }
+        
+        
         
 
+    }
+    
+    public void paintLives(Player p, Graphics g){
+        int lives = p.getLives();
+        int y;
+        if (p == player1){
+            y = 0;
+        }
+        else{
+            y = 72;
+        }
+        if (lives == 0){
+            g.drawImage(zero, 768-48 , 24*18 + y, null);
+        }
+        if (lives == 1){
+            g.drawImage(one, 768-48 , 24*18 + y, null);
+        }
+        if (lives == 2){
+            g.drawImage(two, 768-48 , 24*18 + y, null);
+        }
+    }
+    
+    public void paintLevelNumber(Graphics g){
+        if(input < 10){
+           g.drawImage(blankGrey, 768-72 , 24*18 + 168, null); 
+        }
+        if (input == 0){
+            g.drawImage(zero, 768-48 , 24*18 + 168, null);
+        }
+        if (input == 1){
+            g.drawImage(one, 768-48 , 24*18 + 168, null);
+        }
+        if (input == 2){
+            g.drawImage(two, 768-48 , 24*18 + 168, null);
+        }
+        if (input == 3){
+            g.drawImage(three, 768-48 , 24*18 + 168, null);
+        }
     }
 
     private void paintBricks(Bricks brick, Graphics g2d) {
