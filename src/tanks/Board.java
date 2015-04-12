@@ -342,7 +342,10 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void checkCollisions(Player p) {
-
+        
+        
+        
+        int[][] temp = maps.map1;    
         Rectangle player = p.getBounds();
         Rectangle p1 = player1.getBounds();
         Rectangle p2 = player2.getBounds();
@@ -352,6 +355,14 @@ public class Board extends JPanel implements ActionListener {
         Rectangle gunPower = gun.getBounds();
         Rectangle powerUp = currentPowerUp.getBounds();
 
+        for (int i = 0; i < maps.map1.length-1; i ++){
+            for (int x = 0; x < maps.map1.length-1; i++){
+                    
+                   System.out.println(maps.map1[x][i]); 
+                
+                
+            }
+        }
         for (Enemy en : enemies) {
             Rectangle e1 = en.getBounds();
             if (e1.intersects(player)) {
