@@ -20,8 +20,8 @@ public class Player extends Tank{
     int shoot;
     int level = 1;
     int lives = 2;
-    public Player(int x, int y) {
-        super(x, y);
+    public Player(int x, int y, Board board) {
+        super(x, y, board);
         
 
     }
@@ -57,6 +57,10 @@ public class Player extends Tank{
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
+        if(key == KeyEvent.VK_ESCAPE){
+            System.exit(0);
+        }
+        
         if (key == goLeft) {
             if (arrowPressed == 0) {
                 arrowPressed = 1;

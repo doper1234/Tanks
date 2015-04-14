@@ -11,8 +11,8 @@ import javax.swing.*;
 public class Player1 extends Player {
 
     
-    public Player1(int x, int y) {
-        super(x, y);
+    public Player1(int x, int y, Board board) {
+        super(x, y, board);
         goLeft = KeyEvent.VK_LEFT;
         goRight = KeyEvent.VK_RIGHT;
         goUp = KeyEvent.VK_UP;

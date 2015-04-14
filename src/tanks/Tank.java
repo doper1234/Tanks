@@ -54,9 +54,11 @@ public abstract class Tank extends Entity {
     ImageIcon rightC;
     ImageIcon right2C;
     Timer moveTimer;
+    private final Board gameBoard;
 
-    public Tank(int x, int y) {
+    public Tank(int x, int y, Board board ) {
         super(x, y);
+        gameBoard = board;
         bullets = new ArrayList();
         direction = 1;
         arrowPressed = 0;
@@ -99,7 +101,12 @@ public abstract class Tank extends Entity {
     }
 
     public void moveX() {
-        x = x + dx;
+        int newX = x + dx;
+        if(!canMove(newX, y)){
+            
+            return;
+        }
+        x = newX;
         /*if (x >= 768 - dominantImage.getHeight(null) - 10) {
          x = 768 - dominantImage.getHeight(null) - 10;
          }
@@ -110,7 +117,11 @@ public abstract class Tank extends Entity {
     }
 
     public void moveY() {
-        y = y + dy;
+        int newY = y + dy;
+        if(!canMove(x, newY)){
+            return;
+        }
+        y = newY;
         /*
          if (y >= 720 - 87) {
          y = 720 - 87;
@@ -130,6 +141,11 @@ public abstract class Tank extends Entity {
 
     public int getDirection() {
         return direction;
+    }
+
+    private boolean canMove(int x, int y) {
+        
+        return gameBoard.canPutTankOn(x, y);
     }
 
 }

@@ -61,17 +61,32 @@ public class Board extends JPanel implements ActionListener {
     int input = 0;
     String tempInput;
     int enemiesDefeated = 20;
+    private final int grid = 48;
+    private final int halfGrid = 24;
+    private int[][] currentMap;
+    private int[][] newMap;
+    private final int BLANK_SPACE = 0;
+    private final int BRICK = 1;
+    private final int STEEL_BLOCK = 2;
+    private final int ENTITY_TREE = 3;
+    private final int WATER = 5;
+    private Image brickA1;
+    private Image brickA2;
+    private Image water;
+    ImageIcon i15;
+    ImageIcon i16;
+    ImageIcon i17;
 
     public Board() {
-        do{
-        tempInput = JOptionPane.showInputDialog("Type a map number (0, 1, 2 or 3): ");
-        }while (tempInput != null && tempInput.length() == 0 && (tempInput.contains("0") || tempInput.contains("1") || tempInput.contains("2") || tempInput.contains("3")));
-        if (tempInput == null){
+        do {
+            tempInput = JOptionPane.showInputDialog("Type a map number (0-35): ");
+        } while (tempInput == null);
+        if (tempInput == null) {
             System.exit(0);
         }
         input = Integer.parseInt(tempInput);
         maps = new Maps();
-        
+
         powerUps[0] = new StarPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
         powerUps[1] = new GunPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
         powerUps[2] = new LifePowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
@@ -80,18 +95,18 @@ public class Board extends JPanel implements ActionListener {
         powerUps[5] = new TimerPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
         powerUps[6] = new HardHatPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
         currentPowerUp = powerUps[rand.nextInt(7)];
-        enemy1 = new Enemy(300, 300, 1);
-        enemy2 = new Enemy(100, 100, 2);
-        enemy3 = new Enemy(200, 100, 3);
-        enemy4 = new Enemy(200, 200, 4);
+        enemy1 = new Enemy(400, grid, 1, this);
+        enemy2 = new Enemy(grid*6, grid, 2, this);
+        enemy3 = new Enemy(800, grid, 3, this);
+        enemy4 = new Enemy(0, grid, 4, this);
         enemies.add(enemy1);
         enemies.add(enemy2);
         enemies.add(enemy3);
         enemies.add(enemy4);
-        
+
         enemiesDefeated = enemiesDefeated - enemies.size();
-        player1 = new Player1(768 / 4, 720 - 48);
-        player2 = new Player2((768 / 4) + (768 / 2), 720 -48);
+        player1 = new Player1(768 / 4 + 48, 720 - 48, this);
+        player2 = new Player2((768 / 4) - 144 +(768 / 2), 720 - 48, this);
 
         star = new StarPowerUp(rand.nextInt(768) - 144, rand.nextInt(720) - 96);
         star2 = new StarPowerUp(rand.nextInt(768) - 144, rand.nextInt(720) - 96);
@@ -112,6 +127,14 @@ public class Board extends JPanel implements ActionListener {
         ImageIcon i10 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/one.png");
         ImageIcon i11 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/two.png");
         ImageIcon i12 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/three.png");
+        ImageIcon i13 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/BrickA1.png");
+        ImageIcon i14 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/BrickA2.png");
+        i15 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/water1.png");
+        i16 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/water2.png");
+        i17 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/water3.png");
+        brickA1 = i13.getImage();
+        brickA2 = i14.getImage();
+        water = i15.getImage();
         zero = i9.getImage();
         one = i10.getImage();
         two = i11.getImage();
@@ -125,58 +148,98 @@ public class Board extends JPanel implements ActionListener {
         boarder = i2.getImage();
         eagle = i3.getImage();
         time = new Timer(5, this);
-        time.start();
+
         playSound("Themes");
         //miniExplosionTimer = new Timer (1000,this);
         //miniExplosionTimer.start();
 
     }
 
-    public void map(Graphics g) {
-        
-        int[][] currentMap;
-        if (input == 1){
-            currentMap = maps.getMap1();
+    public void movingWater(){
+        if(ticks % 300 == 0){
+            water =  i17.getImage();
         }
-        else if (input == 2){
-            currentMap = maps.getMap2();
+        else if(ticks % 300 == 100){
+            water = i16.getImage();
         }
-        else if (input == 3){
-            currentMap = maps.getMap3();
+        else if (ticks % 300 == 200){
+           water = i15.getImage();
         }
-        else{
-            currentMap = maps.getBlankMap();
-        }
-
-        for (int i = 0; i < currentMap.length; i++) {
-            for (int x = 0; x < currentMap.length; x++) {
-                if(currentMap[i][x] == 1){
-                    g.drawImage(smallBricks, x* 24 +48, i*24 + 48, null);
-                }
-                if(currentMap[i][x] == 2){
-                    g.drawImage(steel, x* 24 +48, i*24 + 48, null);
-                }
-                if(currentMap[i][x] == 3){
-                    g.drawImage(trees, x* 24 +48, i*24 + 48, null);
-                }
-                if(currentMap[i][x] == 4){
-                    g.drawImage(eagle, x* 24 +48, i*24 + 48, null);
-                }
-            }
-        }
-        /*
-        for (int i = 0; i < brick.length; i++) {
-            for (int x = 0; x < brick.length; x++) {
-
-                if (map1[i][x] == 1) {
-                    brick[0][0] = new Bricks(0, 0);
-                    paintBricks(brick[0][0], g2d);
-                }
-
-            }
-        }*/
-
     }
+    public void map(Graphics g) {
+
+        if (input >= 1 && input <= 35) {
+
+            currentMap = maps.getMap(input);
+        } else {
+            currentMap = maps.getMap(0);
+        }
+
+        newMap = new int [currentMap.length][currentMap.length*4];
+        for (int i = 0; i < newMap.length; i++) {
+            for (int x = 0; x < newMap.length; x++) {
+                
+                
+                if (currentMap[i][x] == 1) {
+                    for(int y = 0; y < 4; y++){
+                       newMap[i][x*4 + y] = 1;
+                       if(y == 0){
+                           g.drawImage(brickA1, x * 24 + 48, i * 24 + 48, null);
+                       }
+                       else if(y == 1) {
+                           g.drawImage(brickA2, x * 24 + 48 + 12, i * 24 + 48, null);
+                       }
+                       else if(y == 2) {
+                           g.drawImage(brickA2, x * 24 + 48, i * 24 + 48 + 12, null);
+                       }
+                       else if(y == 3) {
+                           g.drawImage(brickA1, x * 24 + 48 + 12, i * 24 + 48 + 12, null);
+                       }
+                             
+                       
+                    }
+                    
+                }
+                if (currentMap[i][x] == 2) {
+                    for(int y = 0; y < 4; y++){
+                       newMap[i][x*4 + y] = 2; 
+                    }
+                    g.drawImage(steel, x * 24 + 48, i * 24 + 48, null);
+                }
+                if (currentMap[i][x] == 3) {
+                    for(int y = 0; y < 4; y++){
+                       newMap[i][x*4 +y] = 3; 
+                    }
+                    g.drawImage(trees, x * 24 + 48, i * 24 + 48, null);
+                }
+                if (currentMap[i][x] == 4) {
+                    for(int y = 0; y < 4; y++){
+                       newMap[i][x*4 +y] = 4; 
+                    }
+                    g.drawImage(eagle, x * 24 + 48, i * 24 + 48, null);
+                }
+                if (currentMap[i][x] == 5) {
+                    for(int y = 0; y < 4; y++){
+                       newMap[i][x*4 +y] = 5; 
+                    }
+                    g.drawImage(water, x * 24 + 48, i * 24 + 48, null);
+                }
+            }
+        }
+
+        /*
+         for (int i = 0; i < brick.length; i++) {
+         for (int x = 0; x < brick.length; x++) {
+
+         if (map1[i][x] == 1) {
+         brick[0][0] = new Bricks(0, 0);
+         paintBricks(brick[0][0], g2d);
+         }
+
+         }
+         }*/
+    }
+
     public void moveBullets(Tank t) {
         ArrayList bullets = Tank.getBullets();
         for (int i = 0; i < bullets.size(); i++) {
@@ -227,11 +290,8 @@ public class Board extends JPanel implements ActionListener {
         player1.moveY();
         player2.moveX();
         player2.moveY();
-        
+
         //map();
-        
-        
-        
         repaint();
     }
 
@@ -241,7 +301,7 @@ public class Board extends JPanel implements ActionListener {
 
         g2d.drawImage(background, 0, 0, null);
         g2d.drawImage(boarder, 0, 0, null);
-        
+
         //paintBricks(brick, g2d);
         refreshTank(player1, g2d);
         refreshTank(player2, g2d);
@@ -251,70 +311,70 @@ public class Board extends JPanel implements ActionListener {
             refreshTank(en, g2d);
         }
         map(g2d);
+        movingWater();
+        refreshTank(player1, g2d);
         g2d.drawImage(star.getDomiantImage(), star.getX(), star.getY(), null);
         g2d.drawImage(star2.getDomiantImage(), star2.getX(), star2.getY(), null);
         g2d.drawImage(star3.getDomiantImage(), star3.getX(), star3.getY(), null);
         g2d.drawImage(gun.getDomiantImage(), gun.getX(), gun.getY(), null);
         g2d.drawImage(currentPowerUp.getDomiantImage(), currentPowerUp.getX(), currentPowerUp.getY(), null);
         paintLevelNumber(g2d);
-        
-        for(int i = 0; i < enemies.size(); i ++){
-            if(i % 2 == 0){
-                g2d.drawImage(enemyIcon,  768-72 ,((i*24) +(3*24)) - (i * 12), null);
-            }
-            else{
-                g2d.drawImage(enemyIcon, 768-48 , ((i*24) +(3*24)) - ((i+1) * 12), null);
-            }
-        }
-        for(int i = 19; i >= enemies.size(); i --){
-            if(i % 2 == 0){
-                g2d.drawImage(blankGrey,  768-72 ,((i*24) +(3*24)) - (i * 12), null);
-            }
-            else{
-                g2d.drawImage(blankGrey, 768-48 , ((i*24) +(3*24)) - ((i+1) * 12), null);
-            }
-        }
-        
-        
-        
 
+        for (int i = 0; i < enemies.size(); i++) {
+            if (i % 2 == 0) {
+                g2d.drawImage(enemyIcon, 768 - 72, ((i * 24) + (3 * 24)) - (i * 12), null);
+            } else {
+                g2d.drawImage(enemyIcon, 768 - 48, ((i * 24) + (3 * 24)) - ((i + 1) * 12), null);
+            }
+        }
+        for (int i = 19; i >= enemies.size(); i--) {
+            if (i % 2 == 0) {
+                g2d.drawImage(blankGrey, 768 - 72, ((i * 24) + (3 * 24)) - (i * 12), null);
+            } else {
+                g2d.drawImage(blankGrey, 768 - 48, ((i * 24) + (3 * 24)) - ((i + 1) * 12), null);
+            }
+        }
+
+        if (!time.isRunning()) {
+            time.start();
+        }
+        ticks++;
     }
-    
-    public void paintLives(Player p, Graphics g){
+
+    public void paintLives(Player p, Graphics g) {
         int lives = p.getLives();
         int y;
-        if (p == player1){
+        if (p == player1) {
             y = 0;
-        }
-        else{
+        } else {
             y = 72;
         }
-        if (lives == 0){
-            g.drawImage(zero, 768-48 , 24*18 + y, null);
+        if (lives == 0) {
+            g.drawImage(zero, 768 - 48, 24 * 18 + y, null);
         }
-        if (lives == 1){
-            g.drawImage(one, 768-48 , 24*18 + y, null);
+        if (lives == 1) {
+            g.drawImage(one, 768 - 48, 24 * 18 + y, null);
         }
-        if (lives == 2){
-            g.drawImage(two, 768-48 , 24*18 + y, null);
+        if (lives == 2) {
+            g.drawImage(two, 768 - 48, 24 * 18 + y, null);
         }
     }
-    
-    public void paintLevelNumber(Graphics g){
-        if(input < 10){
-           g.drawImage(blankGrey, 768-72 , 24*18 + 168, null); 
+
+    public void paintLevelNumber(Graphics g) {
+        if (input < 10) {
+            g.drawImage(blankGrey, 768 - 72, 24 * 18 + 168, null);
         }
-        if (input == 0){
-            g.drawImage(zero, 768-48 , 24*18 + 168, null);
+        if (input == 0) {
+            g.drawImage(zero, 768 - 48, 24 * 18 + 168, null);
         }
-        if (input == 1){
-            g.drawImage(one, 768-48 , 24*18 + 168, null);
+        if (input == 1) {
+            g.drawImage(one, 768 - 48, 24 * 18 + 168, null);
         }
-        if (input == 2){
-            g.drawImage(two, 768-48 , 24*18 + 168, null);
+        if (input == 2) {
+            g.drawImage(two, 768 - 48, 24 * 18 + 168, null);
         }
-        if (input == 3){
-            g.drawImage(three, 768-48 , 24*18 + 168, null);
+        if (input == 3) {
+            g.drawImage(three, 768 - 48, 24 * 18 + 168, null);
         }
     }
 
@@ -324,6 +384,17 @@ public class Board extends JPanel implements ActionListener {
                 g2d.drawImage(brick.destroyableBricks[i][x], brick.getX() + (i * 12), brick.getY() + (x * 12), null);
             }
         }
+    }
+
+    boolean canPutTankOn(int x, int y) {
+        int gridX = (x/26) ;
+        int gridY = (y/26) ;
+        System.out.println(gridY +", " + gridX);
+        
+        int entity = newMap[gridY][gridX];
+        
+        return entity == BLANK_SPACE || entity == ENTITY_TREE;
+
     }
 
     private class AL extends KeyAdapter {
@@ -342,10 +413,8 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void checkCollisions(Player p) {
-        
-        
-        
-        int[][] temp = maps.map1;    
+
+        int[][] temp = maps.map1;
         Rectangle player = p.getBounds();
         Rectangle p1 = player1.getBounds();
         Rectangle p2 = player2.getBounds();
@@ -355,12 +424,11 @@ public class Board extends JPanel implements ActionListener {
         Rectangle gunPower = gun.getBounds();
         Rectangle powerUp = currentPowerUp.getBounds();
 
-        for (int i = 0; i < maps.map1.length-1; i ++){
-            for (int x = 0; x < maps.map1.length-1; i++){
-                    
-                   System.out.println(maps.map1[x][i]); 
+        for (int i = 0; i < maps.map1.length - 1; i++) {
+            for (int x = 0; x < maps.map1.length - 1; x++) {
+
                 
-                
+
             }
         }
         for (Enemy en : enemies) {
@@ -481,7 +549,7 @@ public class Board extends JPanel implements ActionListener {
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
-            
+
         } catch (Exception ex) {
             System.out.println("Error with playing sound.");
             ex.printStackTrace();

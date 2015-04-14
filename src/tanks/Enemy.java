@@ -23,13 +23,12 @@ public class Enemy extends Tank implements ActionListener {
     int level = 1;
     
 
-    public Enemy(int x, int y, int l) {
-        super(x, y);
+    public Enemy(int x, int y, int l, Board board) {
+        super(x, y, board);
         direction = 0;
         timer = new Timer(100, this);
         timer.start();
         level = l;
-        
         up = new ImageIcon ("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl1f.png");
         up2 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl1f2.png");
         down = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl1d.png");

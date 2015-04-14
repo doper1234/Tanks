@@ -16,6 +16,10 @@ import javax.swing.ImageIcon;
  */
 public class Entity {
     int x, y;
+    final int boardBeginningX = 48;
+    final int boardBeginningY = 48;
+    final int boardEndX = 642;
+    final int boardEndY = 0;
     ImageIcon empty = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/empty.png");
     Image dominantImage;
     boolean visible = true;
@@ -58,13 +62,13 @@ public class Entity {
     
     public Rectangle getBounds(){
         
-        return new Rectangle(x,y, 42, 42);
+        return new Rectangle(x,y, 48, 48);
     }
     
    public void checkLocation(){
         
-       if (this.x <= 96){
-            this.x =96;
+       if (this.x <= 48){
+            this.x =48;
             
         }
         if(this.x >= 768-144){
