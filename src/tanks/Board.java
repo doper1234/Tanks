@@ -168,7 +168,7 @@ public class Board extends JPanel implements ActionListener {
     }
     public void map(Graphics g) {
 
-        if (input >= 1 && input <= 35) {
+        if (input >= 1 && input <= 5) {
 
             currentMap = maps.getMap(input);
         } else {
