@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -26,6 +28,7 @@ import sun.applet.Main;
 public class Board extends JPanel implements ActionListener {
 
     Maps maps;
+    int [][] mapFromFile;
     Player1 player1;
     Player2 player2;
     Enemy enemy1;
@@ -86,6 +89,7 @@ public class Board extends JPanel implements ActionListener {
             System.exit(0);
         }
         input = Integer.parseInt(tempInput);
+        
         maps = new Maps();
 
         powerUps[0] = new StarPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
@@ -167,12 +171,16 @@ public class Board extends JPanel implements ActionListener {
            water = i15.getImage();
         }
     }
-    public void map(Graphics g) {
+    public void map(Graphics g) throws IOException {
 
-        if (input >= 1 && input <= 5) {
+        if (input >= 2 && input <= 5) {
 
             currentMap = maps.getMap(input);
-        } else {
+        } 
+        else if (input == 1){
+            currentMap = maps.getMapFromFile(input);
+        }
+        else {
             currentMap = maps.getMap(0);
         }
 
@@ -245,7 +253,7 @@ public class Board extends JPanel implements ActionListener {
         ArrayList bullets = Tank.getBullets();
         for (int i = 0; i < bullets.size(); i++) {
             Bullet m = (Bullet) bullets.get(i);
-            if (m.getVisible()) {
+            if (m.getVisible() == true) {
                 m.move();
             } else {
                 bullets.remove(m);
@@ -257,7 +265,7 @@ public class Board extends JPanel implements ActionListener {
 
     public void refreshTank(Tank t, Graphics g2d) {
         g2d.drawImage(t.getDomiantImage(), t.getX(), t.getY(), null);
-        ArrayList bullets = t.getBullets();
+        ArrayList bullets = Tank.getBullets();
         for (int i = 0; i < bullets.size(); i++) {
             Bullet m = (Bullet) bullets.get(i);
             if (m.getDirection() == 1) {
@@ -297,49 +305,53 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2d = (Graphics2D) g;
-
-        g2d.drawImage(background, 0, 0, null);
-        g2d.drawImage(boarder, 0, 0, null);
-
-        //paintBricks(brick, g2d);
-        refreshTank(player1, g2d);
-        refreshTank(player2, g2d);
-        paintLives(player1, g2d);
-        paintLives(player2, g2d);
-        for (Enemy en : enemies) {
-            refreshTank(en, g2d);
-        }
-        map(g2d);
-        movingWater();
-        refreshTank(player1, g2d);
-        g2d.drawImage(star.getDomiantImage(), star.getX(), star.getY(), null);
-        g2d.drawImage(star2.getDomiantImage(), star2.getX(), star2.getY(), null);
-        g2d.drawImage(star3.getDomiantImage(), star3.getX(), star3.getY(), null);
-        g2d.drawImage(gun.getDomiantImage(), gun.getX(), gun.getY(), null);
-        g2d.drawImage(currentPowerUp.getDomiantImage(), currentPowerUp.getX(), currentPowerUp.getY(), null);
-        paintLevelNumber(g2d);
-
-        for (int i = 0; i < enemies.size(); i++) {
-            if (i % 2 == 0) {
-                g2d.drawImage(enemyIcon, 768 - 72, ((i * 24) + (3 * 24)) - (i * 12), null);
-            } else {
-                g2d.drawImage(enemyIcon, 768 - 48, ((i * 24) + (3 * 24)) - ((i + 1) * 12), null);
+        try {
+            super.paint(g);
+            Graphics2D g2d = (Graphics2D) g;
+            
+            g2d.drawImage(background, 0, 0, null);
+            g2d.drawImage(boarder, 0, 0, null);
+            
+            //paintBricks(brick, g2d);
+            refreshTank(player1, g2d);
+            refreshTank(player2, g2d);
+            paintLives(player1, g2d);
+            paintLives(player2, g2d);
+            for (Enemy en : enemies) {
+                refreshTank(en, g2d);
             }
-        }
-        for (int i = 19; i >= enemies.size(); i--) {
-            if (i % 2 == 0) {
-                g2d.drawImage(blankGrey, 768 - 72, ((i * 24) + (3 * 24)) - (i * 12), null);
-            } else {
-                g2d.drawImage(blankGrey, 768 - 48, ((i * 24) + (3 * 24)) - ((i + 1) * 12), null);
+            map(g2d);
+            movingWater();
+            refreshTank(player1, g2d);
+            g2d.drawImage(star.getDomiantImage(), star.getX(), star.getY(), null);
+            g2d.drawImage(star2.getDomiantImage(), star2.getX(), star2.getY(), null);
+            g2d.drawImage(star3.getDomiantImage(), star3.getX(), star3.getY(), null);
+            g2d.drawImage(gun.getDomiantImage(), gun.getX(), gun.getY(), null);
+            g2d.drawImage(currentPowerUp.getDomiantImage(), currentPowerUp.getX(), currentPowerUp.getY(), null);
+            paintLevelNumber(g2d);
+            
+            for (int i = 0; i < enemies.size(); i++) {
+                if (i % 2 == 0) {
+                    g2d.drawImage(enemyIcon, 768 - 72, ((i * 24) + (3 * 24)) - (i * 12), null);
+                } else {
+                    g2d.drawImage(enemyIcon, 768 - 48, ((i * 24) + (3 * 24)) - ((i + 1) * 12), null);
+                }
             }
+            for (int i = 19; i >= enemies.size(); i--) {
+                if (i % 2 == 0) {
+                    g2d.drawImage(blankGrey, 768 - 72, ((i * 24) + (3 * 24)) - (i * 12), null);
+                } else {
+                    g2d.drawImage(blankGrey, 768 - 48, ((i * 24) + (3 * 24)) - ((i + 1) * 12), null);
+                }
+            }
+            
+            if (!time.isRunning()) {
+                time.start();
+            }
+            ticks++;
+        } catch (IOException ex) {
+            Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        if (!time.isRunning()) {
-            time.start();
-        }
-        ticks++;
     }
 
     public void paintLives(Player p, Graphics g) {
@@ -388,7 +400,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     boolean canPutTankOn(int x, int y) {
-        int gridX = (x/26) ;
+        int gridX = (x/26)*4 ;
         int gridY = (y/26) ;
         System.out.println(gridY +", " + gridX);
         

@@ -16,7 +16,7 @@ public class Bullet {
     int x,y, direction;
     Image bullet;
     boolean visible = true;
-    int bulletSpeed = 2;
+    int bulletSpeed = 1;
     final String url = "src/tanks/";
     
     public Bullet(int startX, int startY, int direction, int speed){

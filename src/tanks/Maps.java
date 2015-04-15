@@ -6,7 +6,13 @@
 
 package tanks;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class Maps {
@@ -21,6 +27,7 @@ public class Maps {
         
         
     }
+    final String url = "src/tanks/Maps/";
     int[][]map1 = { 
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -205,19 +212,21 @@ public class Maps {
     };
     ArrayList<int[][]> maps = new ArrayList<>();
     
-    /*public int[][] getMap1(){
-        return map1;
+    public int[][] getMapFromFile(int mapNumber) throws FileNotFoundException, IOException{
+        
+        int[][]map = new int[26][26];
+        Scanner s = new Scanner(new File(url + "Map" + mapNumber +".txt"));
+        for (int i = 0; i < map.length; i++){
+            for(int x = 0; x < map.length; x ++){
+                map[i][x] = s.nextInt();
+                //System.out.print(map[i][x]);
+            }
+            //System.out.println();
+        }
+            
+        
+        return map;
     }
-    public int[][] getMap2(){
-       return map2; 
-    }
-    public int[][] getMap3(){
-        return map3;
-    }
-    public int[][] getBlankMap(){
-        return blankMap;
-    }
-    */
     public int[][] getMap(int mapNumber){
         
         return maps.get(mapNumber);
