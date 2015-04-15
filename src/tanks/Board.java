@@ -546,7 +546,7 @@ public class Board extends JPanel implements ActionListener {
 
     public void playSound(String s) {
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/" + s + ".wav").getAbsoluteFile());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(url + s + ".wav").getAbsoluteFile());
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
