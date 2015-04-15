@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
  * @author Anna
  */
 public class GrenadePowerUp extends PowerUp {
-    ImageIcon grenade = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/grenade.png");
+    ImageIcon grenade = new ImageIcon(url + "grenade.png");
     public GrenadePowerUp(int x, int y) {
         super(x,y);
         this.powerUpImage = grenade;

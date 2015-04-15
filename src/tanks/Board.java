@@ -73,13 +73,14 @@ public class Board extends JPanel implements ActionListener {
     private Image brickA1;
     private Image brickA2;
     private Image water;
+    final String url = "src/tanks/";
     ImageIcon i15;
     ImageIcon i16;
     ImageIcon i17;
 
     public Board() {
         do {
-            tempInput = JOptionPane.showInputDialog("Type a map number (0-35): ");
+            tempInput = JOptionPane.showInputDialog("Type a map number (0-4): ");
         } while (tempInput == null);
         if (tempInput == null) {
             System.exit(0);
@@ -115,23 +116,23 @@ public class Board extends JPanel implements ActionListener {
         brick = new Bricks[12][13];
         addKeyListener(new AL());
         setFocusable(true);
-        ImageIcon i = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/background.png");
-        ImageIcon i2 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/boarder.png");
-        ImageIcon i3 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/eagle.png");
-        ImageIcon i4 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/steelblock.png");
-        ImageIcon i5 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/trees.png");
-        ImageIcon i6 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/smallbricks.png");
-        ImageIcon i7 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/enemyicon.png");
-        ImageIcon i8 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/blankgrey.png");
-        ImageIcon i9 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/zero.png");
-        ImageIcon i10 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/one.png");
-        ImageIcon i11 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/two.png");
-        ImageIcon i12 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/three.png");
-        ImageIcon i13 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/BrickA1.png");
-        ImageIcon i14 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/BrickA2.png");
-        i15 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/water1.png");
-        i16 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/water2.png");
-        i17 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/water3.png");
+        ImageIcon i = new ImageIcon(url + "background.png");
+        ImageIcon i2 = new ImageIcon(url + "boarder.png");
+        ImageIcon i3 = new ImageIcon(url + "eagle.png");
+        ImageIcon i4 = new ImageIcon(url + "steelblock.png");
+        ImageIcon i5 = new ImageIcon(url + "trees.png");
+        ImageIcon i6 = new ImageIcon(url + "smallbricks.png");
+        ImageIcon i7 = new ImageIcon(url + "enemyicon.png");
+        ImageIcon i8 = new ImageIcon(url + "blankgrey.png");
+        ImageIcon i9 = new ImageIcon(url + "zero.png");
+        ImageIcon i10 = new ImageIcon(url + "one.png");
+        ImageIcon i11 = new ImageIcon(url + "two.png");
+        ImageIcon i12 = new ImageIcon(url + "three.png");
+        ImageIcon i13 = new ImageIcon(url + "BrickA1.png");
+        ImageIcon i14 = new ImageIcon(url + "BrickA2.png");
+        i15 = new ImageIcon(url + "water1.png");
+        i16 = new ImageIcon(url + "water2.png");
+        i17 = new ImageIcon(url + "water3.png");
         brickA1 = i13.getImage();
         brickA2 = i14.getImage();
         water = i15.getImage();

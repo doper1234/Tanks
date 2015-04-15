@@ -29,42 +29,42 @@ public class Enemy extends Tank implements ActionListener {
         timer = new Timer(100, this);
         timer.start();
         level = l;
-        up = new ImageIcon ("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl1f.png");
-        up2 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl1f2.png");
-        down = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl1d.png");
-        down2 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl1d2.png");
-        left = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl1l.png");
-        left2 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl12.png");
-        right = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl1r.png");
-        right2 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl1r2.png");
+        up = new ImageIcon (url + "elvl1f.png");
+        up2 = new ImageIcon(url + "elvl1f2.png");
+        down = new ImageIcon(url + "elvl1d.png");
+        down2 = new ImageIcon(url + "elvl1d2.png");
+        left = new ImageIcon(url + "elvl1l.png");
+        left2 = new ImageIcon(url + "elvl12.png");
+        right = new ImageIcon(url + "elvl1r.png");
+        right2 = new ImageIcon(url + "elvl1r2.png");
         setDominantImage(down);
         
-        upA = new ImageIcon ("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl2f.png");
-        up2A = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl2f2.png");
-        downA = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl2d.png");
-        down2A = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl2d2.png");
-        leftA = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl2l.png");
-        left2A = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl22.png");
-        rightA = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl2r.png");
-        right2A = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl2r2.png");
+        upA = new ImageIcon (url + "elvl2f.png");
+        up2A = new ImageIcon(url + "elvl2f2.png");
+        downA = new ImageIcon(url + "elvl2d.png");
+        down2A = new ImageIcon(url + "elvl2d2.png");
+        leftA = new ImageIcon(url + "elvl2l.png");
+        left2A = new ImageIcon(url + "elvl22.png");
+        rightA = new ImageIcon(url + "elvl2r.png");
+        right2A = new ImageIcon(url + "elvl2r2.png");
         
-        upB = new ImageIcon ("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl3f.png");
-        up2B = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl3f2.png");
-        downB = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl3d.png");
-        down2B = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl3d2.png");
-        leftB = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl3l.png");
-        left2B = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl32.png");
-        rightB = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl3r.png");
-        right2B = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl3r2.png");
+        upB = new ImageIcon (url + "elvl3f.png");
+        up2B = new ImageIcon(url + "elvl3f2.png");
+        downB = new ImageIcon(url + "elvl3d.png");
+        down2B = new ImageIcon(url + "elvl3d2.png");
+        leftB = new ImageIcon(url + "elvl3l.png");
+        left2B = new ImageIcon(url + "elvl32.png");
+        rightB = new ImageIcon(url + "elvl3r.png");
+        right2B = new ImageIcon(url + "elvl3r2.png");
         
-        upC = new ImageIcon ("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl4f.png");
-        up2C = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl4f2.png");
-        downC = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl4d.png");
-        down2C = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl4d2.png");
-        leftC = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl4l.png");
-        left2C = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl42.png");
-        rightC = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl4r.png");
-        right2C = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/elvl4r2.png");
+        upC = new ImageIcon (url + "elvl4f.png");
+        up2C = new ImageIcon(url + "elvl4f2.png");
+        downC = new ImageIcon(url + "elvl4d.png");
+        down2C = new ImageIcon(url + "elvl4d2.png");
+        leftC = new ImageIcon(url + "elvl4l.png");
+        left2C = new ImageIcon(url + "elvl42.png");
+        rightC = new ImageIcon(url + "elvl4r.png");
+        right2C = new ImageIcon(url + "elvl4r2.png");
         
     }
 

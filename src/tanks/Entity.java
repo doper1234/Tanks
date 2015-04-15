@@ -20,7 +20,8 @@ public class Entity {
     final int boardBeginningY = 48;
     final int boardEndX = 642;
     final int boardEndY = 0;
-    ImageIcon empty = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/empty.png");
+    final String url = "src/tanks/";
+    ImageIcon empty = new ImageIcon(url + "empty.png");
     Image dominantImage;
     boolean visible = true;
     

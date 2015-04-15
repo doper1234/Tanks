@@ -14,7 +14,7 @@ import javax.swing.ImageIcon;
  */
 public class GunPowerUp extends PowerUp{
     
-    ImageIcon gun = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/gun.png");
+    ImageIcon gun = new ImageIcon(url + "gun.png");
     public GunPowerUp(int x, int y) {
         super(x, y);
         this.powerUpImage = gun;
