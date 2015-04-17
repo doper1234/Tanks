@@ -249,12 +249,33 @@ public class Board extends JPanel implements ActionListener {
          }*/
     }
 
-    public void moveBullets(Tank t) {
-        ArrayList bullets = Tank.getBullets();
+    public void moveBullets(Enemy e) {
+        ArrayList bullets = Enemy.getBullets();
         for (int i = 0; i < bullets.size(); i++) {
             Bullet m = (Bullet) bullets.get(i);
             if (m.getVisible() == true) {
                 m.move();
+                    if (m.getBounds().intersects(player1.getBounds())) {
+                        JOptionPane.showMessageDialog(null, "Enemy hit a player!");
+                        bullets.remove(m);
+                    }
+                
+                
+            } else {
+                bullets.remove(m);
+
+            }
+        }
+
+    }
+    
+    public void moveBulletsPlayer(Player p) {
+        ArrayList bullets = Player.getBullets();
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet m = (Bullet) bullets.get(i);
+            if (m.getVisible() == true) {
+                m.move();
+                
             } else {
                 bullets.remove(m);
 
@@ -293,8 +314,8 @@ public class Board extends JPanel implements ActionListener {
         }
         checkCollisions(player1);
         checkCollisions(player2);
-        moveBullets(player1);
-        moveBullets(player2);
+        moveBulletsPlayer(player1);
+        moveBulletsPlayer(player2);
         player1.moveX();
         player1.moveY();
         player2.moveX();

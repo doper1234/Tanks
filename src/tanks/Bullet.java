@@ -14,6 +14,10 @@ import javax.swing.ImageIcon;
  */
 public class Bullet {
     int x,y, direction;
+    int boardLimitX =624 ;
+    int boardLimitY =624;
+    int boardLimitStartX = 48;
+    int boardLimitStartY = 24; 
     Image bullet;
     boolean visible = true;
     int bulletSpeed = 1;
@@ -56,10 +60,10 @@ public class Bullet {
         if (direction == 4){
             x = x + bulletSpeed;
         }
-        if (x > 624 || x < 96){
+        if (x >  boardLimitX || x < boardLimitStartX){
             visible = false;
         }
-        if(y > 624 || y < 48){
+        if(y > boardLimitY || y < boardLimitStartY){
             visible = false;
         }
     }

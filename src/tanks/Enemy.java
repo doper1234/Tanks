@@ -26,7 +26,7 @@ public class Enemy extends Tank implements ActionListener {
     public Enemy(int x, int y, int l, Board board) {
         super(x, y, board);
         direction = 0;
-        timer = new Timer(100, this);
+        timer = new Timer(1000, this);
         timer.start();
         level = l;
         up = new ImageIcon (url + "elvl1f.png");
