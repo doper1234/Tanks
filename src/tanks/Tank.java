@@ -17,7 +17,7 @@ public abstract class Tank extends Entity {
 
     int dx, dy, direction, arrowPressed;
     int moveUp, moveDown, moveLeft, moveRight;
-    static ArrayList bullets;
+    
     ImageIcon up;
     ImageIcon up2;
     ImageIcon down;
@@ -59,7 +59,7 @@ public abstract class Tank extends Entity {
     public Tank(int x, int y, Board board ) {
         super(x, y);
         gameBoard = board;
-        bullets = new ArrayList();
+        
         direction = 1;
         arrowPressed = 0;
         moveUp = 0;
@@ -83,22 +83,7 @@ public abstract class Tank extends Entity {
 
     }
 
-    public void fire(int level) {
-            Bullet bullet = new Bullet(x, y, direction, 1);
-            bullets.add(bullet);
-            
-            //if(level > 1 && bullets.size() <2){
-              //  bullets.add(bullet);
-            //}
-            
-
-        //int ammo;
-
-    }
-
-    public static ArrayList getBullets() {
-        return bullets;
-    }
+    
 
     public void moveX() {
         int newX = x + dx;

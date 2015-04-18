@@ -7,6 +7,7 @@ package tanks;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.Timer;
@@ -21,10 +22,12 @@ public class Enemy extends Tank implements ActionListener {
     Random move = new Random();
     private int ticks;
     int level = 1;
+    static ArrayList enemyBullets;
     
 
     public Enemy(int x, int y, int l, Board board) {
         super(x, y, board);
+        enemyBullets = new ArrayList();
         direction = 0;
         timer = new Timer(1000, this);
         timer.start();
@@ -88,6 +91,23 @@ public class Enemy extends Tank implements ActionListener {
 
         }
 
+    }
+    
+    public void fire(int level) {
+            Bullet bullet = new Bullet(x, y, direction, 1);
+            enemyBullets.add(bullet);
+            
+            //if(level > 1 && bullets.size() <2){
+              //  bullets.add(bullet);
+            //}
+            
+
+        //int ammo;
+
+    }
+
+    public static ArrayList getBullets() {
+        return enemyBullets;
     }
 
     @Override

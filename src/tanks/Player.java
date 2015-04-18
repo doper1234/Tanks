@@ -7,6 +7,7 @@
 package tanks;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 /**
  *
@@ -20,12 +21,30 @@ public class Player extends Tank{
     int shoot;
     int level = 1;
     int lives = 2;
+    static ArrayList playerBullets;
     public Player(int x, int y, Board board) {
         super(x, y, board);
+        playerBullets = new ArrayList();
         
 
     }
     
+    public void fire(int level) {
+            Bullet bullet = new Bullet(x, y, direction, 1);
+            playerBullets.add(bullet);
+            
+            //if(level > 1 && bullets.size() <2){
+              //  bullets.add(bullet);
+            //}
+            
+
+        //int ammo;
+
+    }
+
+    public static ArrayList getBullets() {
+        return playerBullets;
+    }
     public int getLevel(){
         return level;
     }
@@ -35,9 +54,13 @@ public class Player extends Tank{
     }
     
     public void lostALife(){
+        if(lives <=0){
+            System.exit(0);
+        }
         if(lives > 0){
             lives--;
         }
+        
     }
     
     public void gotALife(){
@@ -185,6 +208,14 @@ public class Player extends Tank{
             arrowPressed = 0;
         }
 
+    }
+    
+    public void setX(int x){
+        this.x = x;
+    }
+    
+    public void setY(int y){
+        this.y = y;
     }
     
 }
