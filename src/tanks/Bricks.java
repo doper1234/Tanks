@@ -15,11 +15,11 @@ import javax.swing.ImageIcon;
  */
 public class Bricks extends Entity{
     Image destroyableBricks[][];
-    ImageIcon A1 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/brickA1.png");
-    ImageIcon A2 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/brickA2.png");
-    ImageIcon B1 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/brickB1.png");
-    ImageIcon B2 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/brickB2.png");
-    ImageIcon emptyBrick = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/emptyBrick.png");
+    ImageIcon A1 = new ImageIcon(url + "brickA1.png");
+    ImageIcon A2 = new ImageIcon(url + "brickA2.png");
+    ImageIcon B1 = new ImageIcon(url + "brickB1.png");
+    ImageIcon B2 = new ImageIcon(url + "brickB2.png");
+    ImageIcon emptyBrick = new ImageIcon(url + "emptyBrick.png");
     
     public Bricks(int x, int y) {
         super(x, y);

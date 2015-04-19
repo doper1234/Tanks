@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
  * @author Anna
  */
 public class StarPowerUp extends PowerUp{
-    ImageIcon star = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/star.png");
+    ImageIcon star = new ImageIcon(url + "star.png");
     public StarPowerUp(int x, int y) {
         super(x, y);
         this.powerUpImage = star;

@@ -10,6 +10,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -22,6 +24,7 @@ import javax.swing.*;
 public class Board extends JPanel implements ActionListener {
 
     Maps maps;
+    int [][] mapFromFile;
     Player1 player1;
     Player2 player2;
     Enemy enemy1;
@@ -66,21 +69,37 @@ public class Board extends JPanel implements ActionListener {
     private final int STEEL_BLOCK = 2;
     private final int ENTITY_TREE = 3;
     private final int WATER = 5;
+    boolean initializeMap = true;
     private Image brickA1;
     private Image brickA2;
     private Image water;
+    private Image emptySpaces;
+    int explosionTime = 0;
+    boolean firstRunThrough = true; 
+    final String url = "src/tanks/";
+    //private final Rectangle brickBounds;
+    boolean flagIsDestroyed = false;
     ImageIcon i15;
     ImageIcon i16;
     ImageIcon i17;
+    ImageIcon i19 = new ImageIcon(url + "miniExplosion1.png");
+    ImageIcon i20 = new ImageIcon(url + "miniExplosion2.png");
+    ImageIcon i21 = new ImageIcon(url + "miniExplosion3.png");
+    ImageIcon i22 = new ImageIcon(url + "empty.png");
+    ImageIcon i23 = new ImageIcon (url + "surrender.png");
+      
+    private Image explosion;
+    private Image surrender;
 
     public Board() {
         do {
-            tempInput = JOptionPane.showInputDialog("Type a map number (0-35): ");
+            tempInput = JOptionPane.showInputDialog("Type a map number (0-4): ");
         } while (tempInput == null);
         if (tempInput == null) {
             System.exit(0);
         }
         input = Integer.parseInt(tempInput);
+        
         maps = new Maps();
 
         powerUps[0] = new StarPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
@@ -111,23 +130,26 @@ public class Board extends JPanel implements ActionListener {
         brick = new Bricks[12][13];
         addKeyListener(new AL());
         setFocusable(true);
-        ImageIcon i = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/background.png");
-        ImageIcon i2 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/boarder.png");
-        ImageIcon i3 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/eagle.png");
-        ImageIcon i4 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/steelblock.png");
-        ImageIcon i5 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/trees.png");
-        ImageIcon i6 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/smallbricks.png");
-        ImageIcon i7 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/enemyicon.png");
-        ImageIcon i8 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/blankgrey.png");
-        ImageIcon i9 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/zero.png");
-        ImageIcon i10 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/one.png");
-        ImageIcon i11 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/two.png");
-        ImageIcon i12 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/three.png");
-        ImageIcon i13 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/BrickA1.png");
-        ImageIcon i14 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/BrickA2.png");
-        i15 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/water1.png");
-        i16 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/water2.png");
-        i17 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/water3.png");
+        ImageIcon i = new ImageIcon(url + "background.png");
+        ImageIcon i2 = new ImageIcon(url + "boarder.png");
+        ImageIcon i3 = new ImageIcon(url + "eagle.png");
+        ImageIcon i4 = new ImageIcon(url + "steelblock.png");
+        ImageIcon i5 = new ImageIcon(url + "trees.png");
+        ImageIcon i6 = new ImageIcon(url + "smallbricks.png");
+        ImageIcon i7 = new ImageIcon(url + "enemyicon.png");
+        ImageIcon i8 = new ImageIcon(url + "blankgrey.png");
+        ImageIcon i9 = new ImageIcon(url + "zero.png");
+        ImageIcon i10 = new ImageIcon(url + "one.png");
+        ImageIcon i11 = new ImageIcon(url + "two.png");
+        ImageIcon i12 = new ImageIcon(url + "three.png");
+        ImageIcon i13 = new ImageIcon(url + "BrickA1.png");
+        ImageIcon i14 = new ImageIcon(url + "BrickA2.png");
+        i15 = new ImageIcon(url + "water1.png");
+        i16 = new ImageIcon(url + "water2.png");
+        i17 = new ImageIcon(url + "water3.png");
+        ImageIcon i18 = new ImageIcon (url + "emptySpacesWhatAreWeLivingFor.png");
+        
+        surrender = i23.getImage();
         brickA1 = i13.getImage();
         brickA2 = i14.getImage();
         water = i15.getImage();
@@ -143,6 +165,7 @@ public class Board extends JPanel implements ActionListener {
         background = i.getImage();
         boarder = i2.getImage();
         eagle = i3.getImage();
+        emptySpaces = i18.getImage();
         time = new Timer(5, this);
 
         playSound("Themes");
@@ -151,6 +174,30 @@ public class Board extends JPanel implements ActionListener {
 
     }
 
+    public void smallExplosion(Graphics g, int x, int y){
+        
+        
+        if(firstRunThrough == true){
+            explosionTime = 0;
+            explosion = i19.getImage();
+            firstRunThrough = false;
+        }        
+        else if (explosionTime == 20){
+            explosion = i20.getImage();
+        }
+        else if (explosionTime == 40){
+            explosion = i21.getImage();
+        }
+        else if (explosionTime == 60){
+            explosion = i22.getImage();
+            firstRunThrough = true;
+            return;
+        }
+        g.drawImage(explosion, x, y, null);
+        
+        explosionTime++;
+            
+    }
     public void movingWater(){
         if(ticks % 300 == 0){
             water =  i17.getImage();
@@ -162,86 +209,162 @@ public class Board extends JPanel implements ActionListener {
            water = i15.getImage();
         }
     }
-    public void map(Graphics g) {
+    public void map(Graphics g) throws IOException {
+        if (initializeMap) {
+            if (input >= 2 && input <= 5) {
 
-        if (input >= 1 && input <= 35) {
-
-            currentMap = maps.getMap(input);
-        } else {
-            currentMap = maps.getMap(0);
+                currentMap = maps.getMap(input);
+            } else if (input == 1) {
+                currentMap = maps.getMapFromFile(input);
+            } else {
+                currentMap = maps.getMap(0);
+            }
+            newMap = new int[currentMap.length][currentMap.length * 4];
+            for (int i = 0; i < newMap.length; i++) {
+                for (int x = 0; x < newMap.length; x++) {
+                    for (int y = 0; y < 4; y++) {
+                        newMap[i][x * 4 + y] = currentMap[i][x];
+                    }
+                }
+            }
+            initializeMap = false;
         }
 
-        newMap = new int [currentMap.length][currentMap.length*4];
+        
         for (int i = 0; i < newMap.length; i++) {
             for (int x = 0; x < newMap.length; x++) {
-                
-                
-                if (currentMap[i][x] == 1) {
-                    for(int y = 0; y < 4; y++){
-                       newMap[i][x*4 + y] = 1;
-                       if(y == 0){
-                           g.drawImage(brickA1, x * 24 + 48, i * 24 + 48, null);
-                       }
-                       else if(y == 1) {
-                           g.drawImage(brickA2, x * 24 + 48 + 12, i * 24 + 48, null);
-                       }
-                       else if(y == 2) {
-                           g.drawImage(brickA2, x * 24 + 48, i * 24 + 48 + 12, null);
-                       }
-                       else if(y == 3) {
-                           g.drawImage(brickA1, x * 24 + 48 + 12, i * 24 + 48 + 12, null);
-                       }
-                             
-                       
+                for (int y = 0; y < 4; y++) {
+                    //newMap[i][x * 4 + y] = currentMap[i][x];
+                    if (newMap[i][x * 4 + y] == 0) {
+                        if (y == 0) {
+                            g.drawImage(emptySpaces, x * 24 + 48, i * 24 + 48, null);
+                        } else if (y == 1) {
+                            g.drawImage(emptySpaces, x * 24 + 48, i * 24 + 48 + 12, null);
+                        } else if (y == 2) {
+                            g.drawImage(emptySpaces, x * 24 + 48 + 12, i * 24 + 48, null);
+                            
+                        } else if (y == 3) {
+                            g.drawImage(emptySpaces, x * 24 + 48 + 12, i * 24 + 48 + 12, null);
+                        }
+                        
+                    }
+                    if (newMap[i][x * 4 + y] == 1) {
+                        if (y == 0) {
+                            g.drawImage(brickA1, x * 24 + 48, i * 24 + 48, null);
+                        } else if (y == 1) {
+                            g.drawImage(brickA2, x * 24 + 48, i * 24 + 48 + 12, null);
+                        } else if (y == 2) {
+                            g.drawImage(brickA2, x * 24 + 48 + 12, i * 24 + 48, null);
+                            
+                        } else if (y == 3) {
+                            g.drawImage(brickA1, x * 24 + 48 + 12, i * 24 + 48 + 12, null);
+                        }
+                        
+                    }
+                    if(newMap[i][x*4 + y] == 2 ){
+                        g.drawImage(steel, x * 24 + 48, i * 24 + 48, null);
                     }
                     
-                }
-                if (currentMap[i][x] == 2) {
-                    for(int y = 0; y < 4; y++){
-                       newMap[i][x*4 + y] = 2; 
+                    if(newMap[i][x * 4 + y] == 3){
+                      g.drawImage(trees, x * 24 + 48, i * 24 + 48, null);  
                     }
-                    g.drawImage(steel, x * 24 + 48, i * 24 + 48, null);
-                }
-                if (currentMap[i][x] == 3) {
-                    for(int y = 0; y < 4; y++){
-                       newMap[i][x*4 +y] = 3; 
+                    
+                    if(newMap[i][x * 4 + y] == 4){
+                        g.drawImage(eagle, x * 24 + 48, i * 24 + 48, null);
                     }
-                    g.drawImage(trees, x * 24 + 48, i * 24 + 48, null);
-                }
-                if (currentMap[i][x] == 4) {
-                    for(int y = 0; y < 4; y++){
-                       newMap[i][x*4 +y] = 4; 
-                    }
-                    g.drawImage(eagle, x * 24 + 48, i * 24 + 48, null);
-                }
-                if (currentMap[i][x] == 5) {
-                    for(int y = 0; y < 4; y++){
-                       newMap[i][x*4 +y] = 5; 
-                    }
-                    g.drawImage(water, x * 24 + 48, i * 24 + 48, null);
+                    
+                    if(newMap[i][x * 4 + y] == 5){
+                        g.drawImage(water, x * 24 + 48, i * 24 + 48, null);
+                    }            
+                                    
+                    
                 }
             }
         }
+    }    
 
-        /*
-         for (int i = 0; i < brick.length; i++) {
-         for (int x = 0; x < brick.length; x++) {
-
-         if (map1[i][x] == 1) {
-         brick[0][0] = new Bricks(0, 0);
-         paintBricks(brick[0][0], g2d);
-         }
-
-         }
-         }*/
-    }
-
-    public void moveBullets(Tank t) {
-        ArrayList bullets = Tank.getBullets();
+    public void moveBullets(Enemy t) {
+        ArrayList bullets = Enemy.getBullets();
         for (int i = 0; i < bullets.size(); i++) {
             Bullet m = (Bullet) bullets.get(i);
-            if (m.getVisible()) {
+            if (m.getVisible() == true) {
                 m.move();
+                    if (m.getBounds().intersects(player1.getBounds())) {
+                        player1.lostALife();
+                        player1.setX(768 / 4 + 48);
+                        player1.setY(720 - 48);
+                        player1.setLevel(1);
+                        player1.setDominantImage(player1.up);
+                        bullets.remove(m);
+                        
+                        
+                    }
+                
+                
+            } else {
+                bullets.remove(m);
+                
+
+            }
+        }
+
+    }
+    
+    public void moveBullets(Player p) {
+        ArrayList bullets = Player.getBullets();
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet m = (Bullet) bullets.get(i);
+            if (m.getVisible() == true) {
+                m.move();
+                for(Enemy e: enemies){
+                    if (m.getBounds().intersects(e.getBounds())) {
+                        
+                        bullets.remove(m);
+                        e.setVisible(false);
+                        
+                    }
+                    
+                    if (newMap[m.getY() / 26][(m.getX() * 4) / 26] == 1) {
+                        bullets.remove(m);
+
+                        newMap[m.getY() / 26][(m.getX() * 4) / 26] = 0;
+                        if ((((m.getX() * 4) / 26) + 1) < 96 && (m.getY() / 26 + 1) < 96) {
+
+                            if (newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26 + 1] == 1) {
+                                newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] = 0;
+                                newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26] = 0;
+                                newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26 + 1] = 0;
+                            } else if (newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] == 1) {
+                                newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] = 0;
+                            }
+
+                        }
+
+                    }
+                    if(newMap[m.getY()/26][(m.getX()*4)/26] == 2){
+                        bullets.remove(m);
+                        if(p.getLevel() == 4){
+                            newMap[m.getY()/26][(m.getX()*4)/26] = 0;
+                            newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] = 0;
+                            newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26] = 0;
+                            newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26 + 1] = 0;
+                        }
+                    }
+                    if (newMap[m.getY()/26][(m.getX()*4)/26] == 4 || 
+                            newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] == 4 ||
+                            newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26] == 4 ||
+                            newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26 + 1] == 4) {
+
+                        //Rectangle flagBounds = new Rectangle(m.getY() / 26, m.getX() / 26, eagle.getWidth(this), eagle.getHeight(this));
+                        bullets.remove(m);
+                        //JOptionPane.showMessageDialog(null, "You're fucked");
+                        flagIsDestroyed = true;
+
+                    }
+                    
+                }
+                
+                
             } else {
                 bullets.remove(m);
 
@@ -252,9 +375,10 @@ public class Board extends JPanel implements ActionListener {
 
     public void refreshTank(Tank t, Graphics g2d) {
         g2d.drawImage(t.getDomiantImage(), t.getX(), t.getY(), null);
-        ArrayList bullets = t.getBullets();
+        ArrayList bullets = Enemy.getBullets();
         for (int i = 0; i < bullets.size(); i++) {
             Bullet m = (Bullet) bullets.get(i);
+            
             if (m.getDirection() == 1) {
                 g2d.drawImage(m.getImage(), m.getX() + (t.getDomiantImage().getWidth(this) / 2) - 6, m.getY(), null);
             }
@@ -270,13 +394,64 @@ public class Board extends JPanel implements ActionListener {
 
         }
     }
+    
+    public void refreshTank(Player t, Graphics g2d) {
+        g2d.drawImage(t.getDomiantImage(), t.getX(), t.getY(), null);
+        ArrayList bullets = Player.getBullets();
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet m = (Bullet) bullets.get(i);
+            
+            
+            
+            if (m.getDirection() == 1) {
+                g2d.drawImage(m.getImage(), m.getX() + (t.getDomiantImage().getWidth(this) / 2) - 6, m.getY(), null);
+            }
+            if (m.getDirection() == 2) {
+                g2d.drawImage(m.getImage(), m.getX() + (t.getDomiantImage().getWidth(this) / 2) - 6, m.getY() + t.getDomiantImage().getHeight(this), null);
+            }
+            if (m.getDirection() == 3) {
+                g2d.drawImage(m.getImage(), m.getX(), m.getY() + (t.getDomiantImage().getHeight(this) / 2) - 6, null);
+            }
+            if (m.getDirection() == 4) {
+                g2d.drawImage(m.getImage(), m.getX() + t.getDomiantImage().getWidth(this), m.getY() + (t.getDomiantImage().getHeight(this) / 2) - 6, null);
+            }
+            
+
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        Graphics g = getGraphics();
+        if(enemy1.getVisible() == false){
+            smallExplosion(g, enemy1.getX(), enemy1.getY());    
+            enemies.remove(enemy1);
+                
+        }
+        if(enemy2.getVisible() == false){
+            smallExplosion(g, enemy2.getX(), enemy2.getY());    
+                
+            enemies.remove(enemy2);
+        }
+        if(enemy3.getVisible() == false){
+            smallExplosion(g, enemy3.getX(), enemy3.getY());    
+                
+            enemies.remove(enemy3);
+        }
+        if(enemy4.getVisible() == false){
+            smallExplosion(g, enemy4.getX(), enemy4.getY());    
+                
+            enemies.remove(enemy4);
+        }
+        
         for (Enemy en : enemies) {
+            if (en.getVisible() == true){
             moveBullets(en);
             en.moveX();
             en.moveY();
+            }
+            
+            
         }
         checkCollisions(player1);
         checkCollisions(player2);
@@ -289,52 +464,67 @@ public class Board extends JPanel implements ActionListener {
 
         //map();
         repaint();
+        if(enemies.isEmpty()){
+            JOptionPane.showMessageDialog(null, "You've destroyed all enemies! You win!");
+            System.exit(0);
+        }
+        if(flagIsDestroyed){
+            //JOptionPane.showMessageDialog(null, "The enemy tanks destroyed your flag. You've lost!");
+            eagle = i23.getImage();
+            g.drawImage(surrender, (768/2)-48, 720-96, null);
+            //System.exit(0);
+            
+        }
     }
 
     public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2d = (Graphics2D) g;
-
-        g2d.drawImage(background, 0, 0, null);
-        g2d.drawImage(boarder, 0, 0, null);
-
-        //paintBricks(brick, g2d);
-        refreshTank(player1, g2d);
-        refreshTank(player2, g2d);
-        paintLives(player1, g2d);
-        paintLives(player2, g2d);
-        for (Enemy en : enemies) {
-            refreshTank(en, g2d);
-        }
-        map(g2d);
-        movingWater();
-        refreshTank(player1, g2d);
-        g2d.drawImage(star.getDomiantImage(), star.getX(), star.getY(), null);
-        g2d.drawImage(star2.getDomiantImage(), star2.getX(), star2.getY(), null);
-        g2d.drawImage(star3.getDomiantImage(), star3.getX(), star3.getY(), null);
-        g2d.drawImage(gun.getDomiantImage(), gun.getX(), gun.getY(), null);
-        g2d.drawImage(currentPowerUp.getDomiantImage(), currentPowerUp.getX(), currentPowerUp.getY(), null);
-        paintLevelNumber(g2d);
-
-        for (int i = 0; i < enemies.size(); i++) {
-            if (i % 2 == 0) {
-                g2d.drawImage(enemyIcon, 768 - 72, ((i * 24) + (3 * 24)) - (i * 12), null);
-            } else {
-                g2d.drawImage(enemyIcon, 768 - 48, ((i * 24) + (3 * 24)) - ((i + 1) * 12), null);
+        try {
+            super.paint(g);
+            
+            Graphics2D g2d = (Graphics2D) g;
+            
+            g2d.drawImage(background, 0, 0, null);
+            g2d.drawImage(boarder, 0, 0, null);
+            map(g2d);
+            
+            //paintBricks(brick, g2d);
+            refreshTank(player1, g2d);
+            refreshTank(player2, g2d);
+            paintLives(player1, g2d);
+            paintLives(player2, g2d);
+            for (Enemy en : enemies) {
+                refreshTank(en, g2d);
             }
-        }
-        for (int i = 19; i >= enemies.size(); i--) {
-            if (i % 2 == 0) {
-                g2d.drawImage(blankGrey, 768 - 72, ((i * 24) + (3 * 24)) - (i * 12), null);
-            } else {
-                g2d.drawImage(blankGrey, 768 - 48, ((i * 24) + (3 * 24)) - ((i + 1) * 12), null);
+            movingWater();
+            g2d.drawImage(star.getDomiantImage(), star.getX(), star.getY(), null);
+            g2d.drawImage(star2.getDomiantImage(), star2.getX(), star2.getY(), null);
+            g2d.drawImage(star3.getDomiantImage(), star3.getX(), star3.getY(), null);
+            g2d.drawImage(gun.getDomiantImage(), gun.getX(), gun.getY(), null);
+            g2d.drawImage(currentPowerUp.getDomiantImage(), currentPowerUp.getX(), currentPowerUp.getY(), null);
+            paintLevelNumber(g2d);
+            
+            for (int i = 0; i < enemies.size(); i++) {
+                if (i % 2 == 0) {
+                    g2d.drawImage(enemyIcon, 768 - 72, ((i * 24) + (3 * 24)) - (i * 12), null);
+                } else {
+                    g2d.drawImage(enemyIcon, 768 - 48, ((i * 24) + (3 * 24)) - ((i + 1) * 12), null);
+                }
             }
+            for (int i = 19; i >= enemies.size(); i--) {
+                if (i % 2 == 0) {
+                    g2d.drawImage(blankGrey, 768 - 72, ((i * 24) + (3 * 24)) - (i * 12), null);
+                } else {
+                    g2d.drawImage(blankGrey, 768 - 48, ((i * 24) + (3 * 24)) - ((i + 1) * 12), null);
+                }
+            }
+            
+            if (!time.isRunning()) {
+                time.start();
+            }
+            ticks++;
+        } catch (IOException ex) {
+            Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        if (!time.isRunning()) {
-            time.start();
-        }
-        ticks++;
     }
 
     public void paintLives(Player p, Graphics g) {
@@ -383,9 +573,9 @@ public class Board extends JPanel implements ActionListener {
     }
 
     boolean canPutTankOn(int x, int y) {
-        int gridX = (x/26) ;
+        int gridX = ((x*4)/26) ;
         int gridY = (y/26) ;
-        System.out.println(gridY +", " + gridX);
+        
         
         int entity = newMap[gridY][gridX];
         
@@ -541,7 +731,7 @@ public class Board extends JPanel implements ActionListener {
 
     public void playSound(String s) {
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/" + s + ".wav").getAbsoluteFile());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(url + s + ".wav").getAbsoluteFile());
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();

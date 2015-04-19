@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
  * @author Anna
  */
 public class TimerPowerUp extends PowerUp{
-    ImageIcon timer = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/timer.png");
+    ImageIcon timer = new ImageIcon(url + "timer.png");
     public TimerPowerUp(int x, int y) {
         super(x,y);
         this.powerUpImage = timer;

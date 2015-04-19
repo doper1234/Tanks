@@ -28,10 +28,10 @@ public class MiniExplosion extends Entity implements ActionListener {
         int ticks = 0;
         public MiniExplosion(int x, int y){
             super(x,y);
-            empty = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/empty.png");
-            miniExplosion1 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/miniExplosion1.png");
-            miniExplosion2 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/miniExplosion2.png");
-            miniExplosion3 = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/miniExplosion3.png");
+            empty = new ImageIcon(url + "empty.png");
+            miniExplosion1 = new ImageIcon(url + "miniExplosion1.png");
+            miniExplosion2 = new ImageIcon(url + "miniExplosion2.png");
+            miniExplosion3 = new ImageIcon(url + "miniExplosion3.png");
             timer = new Timer(100,this);
  
         }

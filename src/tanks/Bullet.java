@@ -14,19 +14,24 @@ import javax.swing.ImageIcon;
  */
 public class Bullet {
     int x,y, direction;
+    int boardLimitX =624 ;
+    int boardLimitY =624;
+    int boardLimitStartX = 48;
+    int boardLimitStartY = 24; 
     Image bullet;
     boolean visible = true;
-    int bulletSpeed = 2;
+    int bulletSpeed = 1;
+    final String url = "src/tanks/";
     
     public Bullet(int startX, int startY, int direction, int speed){
         bulletSpeed = bulletSpeed * speed;
         x = startX;
         y = startY;
         this.direction = direction;
-        ImageIcon bulletUp = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/bulletup.png");
-        ImageIcon bulletDown = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/bulletdown.png");
-        ImageIcon bulletLeft = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/bulletleft.png");
-        ImageIcon bulletRight = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/bulletright.png");
+        ImageIcon bulletUp = new ImageIcon(url + "bulletup.png");
+        ImageIcon bulletDown = new ImageIcon(url + "bulletdown.png");
+        ImageIcon bulletLeft = new ImageIcon(url + "bulletleft.png");
+        ImageIcon bulletRight = new ImageIcon(url + "bulletright.png");
         if (direction == 1){
             bullet = bulletUp.getImage();
         }
@@ -55,10 +60,10 @@ public class Bullet {
         if (direction == 4){
             x = x + bulletSpeed;
         }
-        if (x > 624 || x < 96){
+        if (x >  boardLimitX || x < boardLimitStartX){
             visible = false;
         }
-        if(y > 624 || y < 48){
+        if(y > boardLimitY || y < boardLimitStartY){
             visible = false;
         }
     }

@@ -14,7 +14,7 @@ import javax.swing.ImageIcon;
  */
 public class HardHatPowerUp extends PowerUp{
     
-    ImageIcon hardHat = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/hardhat.png");
+    ImageIcon hardHat = new ImageIcon(url + "hardhat.png");
     public HardHatPowerUp(int x, int y) {
         super(x,y);
         this.powerUpImage = hardHat;

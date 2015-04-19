@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
  * @author Anna
  */
 public class ShovelPowerUp extends PowerUp{
-    ImageIcon shovel = new ImageIcon("C:/Users/Anna/Documents/NetBeansProjects/Tanks/src/tanks/shovel.png");
+    ImageIcon shovel = new ImageIcon(url + "shovel.png");
     public ShovelPowerUp(int x, int y) {
         super(x,y);
         this.powerUpImage = shovel;
