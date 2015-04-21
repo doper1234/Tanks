@@ -16,10 +16,7 @@ import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
-import sun.applet.Main;
 
 /**
  *
@@ -79,8 +76,10 @@ public class Board extends JPanel implements ActionListener {
     private Image water;
     private Image emptySpaces;
     int explosionTime = 0;
+    boolean firstRunThrough = true; 
     final String url = "src/tanks/";
     //private final Rectangle brickBounds;
+    boolean flagIsDestroyed = false;
     ImageIcon i15;
     ImageIcon i16;
     ImageIcon i17;
@@ -88,8 +87,10 @@ public class Board extends JPanel implements ActionListener {
     ImageIcon i20 = new ImageIcon(url + "miniExplosion2.png");
     ImageIcon i21 = new ImageIcon(url + "miniExplosion3.png");
     ImageIcon i22 = new ImageIcon(url + "empty.png");
+    ImageIcon i23 = new ImageIcon (url + "surrender.png");
       
     private Image explosion;
+    private Image surrender;
 
     public Board() {
         do {
@@ -148,6 +149,8 @@ public class Board extends JPanel implements ActionListener {
         i16 = new ImageIcon(url + "water2.png");
         i17 = new ImageIcon(url + "water3.png");
         ImageIcon i18 = new ImageIcon (url + "emptySpacesWhatAreWeLivingFor.png");
+        
+        surrender = i23.getImage();
         brickA1 = i13.getImage();
         brickA2 = i14.getImage();
         water = i15.getImage();
@@ -173,23 +176,24 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void smallExplosion(Graphics g, int x, int y){
-        /*boolean firstRunThrough = true;
+        
         
         if(firstRunThrough == true){
             explosionTime = 0;
             explosion = i19.getImage();
             firstRunThrough = false;
         }        
-        else if (explosionTime == 200){
+        else if (explosionTime == 20){
             explosion = i20.getImage();
         }
-        else if (explosionTime == 400){
+        else if (explosionTime == 40){
             explosion = i21.getImage();
         }
-        else if (explosionTime == 600){
+        else if (explosionTime == 60){
             explosion = i22.getImage();
-        }*/
-        explosion = i21.getImage();
+            firstRunThrough = true;
+            return;
+        }
         g.drawImage(explosion, x, y, null);
         
         explosionTime++;
@@ -236,9 +240,10 @@ public class Board extends JPanel implements ActionListener {
                         if (y == 0) {
                             g.drawImage(emptySpaces, x * 24 + 48, i * 24 + 48, null);
                         } else if (y == 1) {
-                            g.drawImage(emptySpaces, x * 24 + 48 + 12, i * 24 + 48, null);
-                        } else if (y == 2) {
                             g.drawImage(emptySpaces, x * 24 + 48, i * 24 + 48 + 12, null);
+                        } else if (y == 2) {
+                            g.drawImage(emptySpaces, x * 24 + 48 + 12, i * 24 + 48, null);
+                            
                         } else if (y == 3) {
                             g.drawImage(emptySpaces, x * 24 + 48 + 12, i * 24 + 48 + 12, null);
                         }
@@ -248,9 +253,10 @@ public class Board extends JPanel implements ActionListener {
                         if (y == 0) {
                             g.drawImage(brickA1, x * 24 + 48, i * 24 + 48, null);
                         } else if (y == 1) {
-                            g.drawImage(brickA2, x * 24 + 48 + 12, i * 24 + 48, null);
-                        } else if (y == 2) {
                             g.drawImage(brickA2, x * 24 + 48, i * 24 + 48 + 12, null);
+                        } else if (y == 2) {
+                            g.drawImage(brickA2, x * 24 + 48 + 12, i * 24 + 48, null);
+                            
                         } else if (y == 3) {
                             g.drawImage(brickA1, x * 24 + 48 + 12, i * 24 + 48 + 12, null);
                         }
@@ -315,16 +321,48 @@ public class Board extends JPanel implements ActionListener {
                     if (m.getBounds().intersects(e.getBounds())) {
                         
                         bullets.remove(m);
+                        e.setVisible(false);
                         
                     }
                     
-                    if(newMap[m.getY()/26][(m.getX()*4)/26] == 1){
+                    if (newMap[m.getY() / 26][(m.getX() * 4) / 26] == 1) {
                         bullets.remove(m);
-                        
-                        
-                        newMap[m.getY()/26][(m.getX()*4)/26 ] = 0;
-                        
+
+                        newMap[m.getY() / 26][(m.getX() * 4) / 26] = 0;
+                        if ((((m.getX() * 4) / 26) + 1) < 96 && (m.getY() / 26 + 1) < 96) {
+
+                            if (newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26 + 1] == 1) {
+                                newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] = 0;
+                                newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26] = 0;
+                                newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26 + 1] = 0;
+                            } else if (newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] == 1) {
+                                newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] = 0;
+                            }
+
+                        }
+
                     }
+                    if(newMap[m.getY()/26][(m.getX()*4)/26] == 2){
+                        bullets.remove(m);
+                        if(p.getLevel() == 4){
+                            newMap[m.getY()/26][(m.getX()*4)/26] = 0;
+                            newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] = 0;
+                            newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26] = 0;
+                            newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26 + 1] = 0;
+                        }
+                    }
+                    if (newMap[m.getY()/26][(m.getX()*4)/26] == 4 || 
+                            newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] == 4 ||
+                            newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26] == 4 ||
+                            newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26 + 1] == 4) {
+
+                        //Rectangle flagBounds = new Rectangle(m.getY() / 26, m.getX() / 26, eagle.getWidth(this), eagle.getHeight(this));
+                        bullets.remove(m);
+                        //JOptionPane.showMessageDialog(null, "You're fucked");
+                        flagIsDestroyed = true;
+
+                    }
+                    
                 }
                 
                 
@@ -385,10 +423,35 @@ public class Board extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        Graphics g = getGraphics();
+        if(enemy1.getVisible() == false){
+            smallExplosion(g, enemy1.getX(), enemy1.getY());    
+            enemies.remove(enemy1);
+                
+        }
+        if(enemy2.getVisible() == false){
+            smallExplosion(g, enemy2.getX(), enemy2.getY());    
+                
+            enemies.remove(enemy2);
+        }
+        if(enemy3.getVisible() == false){
+            smallExplosion(g, enemy3.getX(), enemy3.getY());    
+                
+            enemies.remove(enemy3);
+        }
+        if(enemy4.getVisible() == false){
+            smallExplosion(g, enemy4.getX(), enemy4.getY());    
+                
+            enemies.remove(enemy4);
+        }
+        
         for (Enemy en : enemies) {
+            if (en.getVisible() == true){
             moveBullets(en);
             en.moveX();
             en.moveY();
+            }
+            
             
         }
         checkCollisions(player1);
@@ -402,6 +465,17 @@ public class Board extends JPanel implements ActionListener {
 
         //map();
         repaint();
+        if(enemies.isEmpty()){
+            JOptionPane.showMessageDialog(null, "You've destroyed all enemies! You win!");
+            System.exit(0);
+        }
+        if(flagIsDestroyed){
+            //JOptionPane.showMessageDialog(null, "The enemy tanks destroyed your flag. You've lost!");
+            eagle = i23.getImage();
+            g.drawImage(surrender, (768/2)-48, 720-96, null);
+            //System.exit(0);
+            
+        }
     }
 
     public void paint(Graphics g) {
