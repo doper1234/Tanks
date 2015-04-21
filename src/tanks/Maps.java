@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -213,17 +214,22 @@ public class Maps {
     ArrayList<int[][]> maps = new ArrayList<>();
     
     public int[][] getMapFromFile(int mapNumber) throws FileNotFoundException, IOException{
-        
         int[][]map = new int[26][26];
         Scanner s = new Scanner(new File(url + "Map" + mapNumber +".txt"));
+//        BufferedReader reader = new BufferedReader(new FileReader(new File(url + "Map" + mapNumber +".txt")));
+//		for (int i = 0; i < map.length; i++) {
+//		    String[] items = reader.readLine().split(",");
+//            for (int j = 0; j < map.length; j++) {
+//                map[i][j] = Integer.parseInt(items[j]);
+//            }
+//		}
         for (int i = 0; i < map.length; i++){
-            for(int x = 0; x < map.length; x ++){
-                map[i][x] = s.nextInt();
-                //System.out.print(map[i][x]);
+            for(int j = 0; j < map.length; j++){
+				map[i][j] = s.nextInt();
+                System.out.print(map[i][j]);
             }
-            //System.out.println();
+            System.out.println();
         }
-            
         
         return map;
     }
