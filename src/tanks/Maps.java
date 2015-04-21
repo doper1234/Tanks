@@ -216,19 +216,21 @@ public class Maps {
     public int[][] getMapFromFile(int mapNumber) throws FileNotFoundException, IOException{
         int[][]map = new int[26][26];
         Scanner s = new Scanner(new File(url + "Map" + mapNumber +".txt"));
-//        BufferedReader reader = new BufferedReader(new FileReader(new File(url + "Map" + mapNumber +".txt")));
+        System.out.println("Hello world!");
+        System.out.println(s.delimiter());
+//              BufferedReader reader = new BufferedReader(new FileReader(new File(url + "Map" + mapNumber +".txt")));
 //		for (int i = 0; i < map.length; i++) {
-//		    String[] items = reader.readLine().split(",");
-//            for (int j = 0; j < map.length; j++) {
-//                map[i][j] = Integer.parseInt(items[j]);
-//            }
-//		}
+//		    String[] items = reader.readLine().split(" ");
+//                  for (int j = 0; j < map.length; j++) {
+//                      map[i][j] = Integer.parseInt(items[j]);
+//                  }
+//              }
         for (int i = 0; i < map.length; i++){
             for(int j = 0; j < map.length; j++){
-				map[i][j] = s.nextInt();
-                System.out.print(map[i][j]);
+                map[i][j] = s.nextInt();
+//                System.out.print(map[i][j]);
             }
-            System.out.println();
+//            System.out.println();
         }
         
         return map;

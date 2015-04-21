@@ -3,13 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Chris/Desktop/Tanks/Tanks/src/tanks/Player.java</file>
-            <file>file:/C:/Users/Chris/Desktop/Tanks/Tanks/src/tanks/Tank.java</file>
-            <file>file:/C:/Users/Chris/Desktop/Tanks/Tanks/src/tanks/Enemy.java</file>
-            <file>file:/C:/Users/Chris/Desktop/Tanks/Tanks/src/tanks/Board.java</file>
-            <file>file:/C:/Users/Chris/Desktop/Tanks/Tanks/src/tanks/MiniExplosion.java</file>
-            <file>file:/C:/Users/Chris/Desktop/Tanks/Tanks/src/tanks/Maps.java</file>
-            <file>file:/C:/Users/Chris/Desktop/Tanks/Tanks/src/tanks/Bullet.java</file>
+            <file>file:/C:/Users/Chris/Desktop/Tanks/tanks/src/tanks/Maps.java</file>
+            <file>file:/C:/Users/Chris/Desktop/Tanks/tanks/src/tanks/Bricks.java</file>
         </group>
     </open-files>
 </project-private>
