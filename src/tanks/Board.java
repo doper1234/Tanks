@@ -69,7 +69,9 @@ public class Board extends JPanel implements ActionListener {
     private final int BRICK = 1;
     private final int STEEL_BLOCK = 2;
     private final int ENTITY_TREE = 3;
+    private final int EAGLE = 4;
     private final int WATER = 5;
+    private final int SLIDING_TILE = 6;
     boolean initializeMap = true;
     private Image brickA1;
     private Image brickA2;
@@ -94,7 +96,7 @@ public class Board extends JPanel implements ActionListener {
 
     public Board() {
         do {
-            tempInput = JOptionPane.showInputDialog("Type a map number (0-4): ");
+            tempInput = JOptionPane.showInputDialog("Enter Stage Number:");
         } while (tempInput == null);
         if (tempInput == null) {
             System.exit(0);
@@ -212,14 +214,15 @@ public class Board extends JPanel implements ActionListener {
     }
     public void map(Graphics g) throws IOException {
         if (initializeMap) {
-            if (input >= 2 && input <= 5) {
+            if (input >= 1 && input < 36) {
 
-                currentMap = maps.getMap(input);
-            } else if (input == 1) {
                 currentMap = maps.getMapFromFile(input);
-            } else {
-                currentMap = maps.getMap(0);
             }
+            else if(input >= 36){
+                currentMap = maps.getMapFromFile(input % 35);
+            }
+                
+            
             newMap = new int[currentMap.length][currentMap.length * 4];
             for (int i = 0; i < newMap.length; i++) {
                 for (int x = 0; x < newMap.length; x++) {
@@ -601,7 +604,6 @@ public class Board extends JPanel implements ActionListener {
 
     public void checkCollisions(Player p) {
 
-        int[][] temp = maps.map1;
         Rectangle player = p.getBounds();
         Rectangle p1 = player1.getBounds();
         Rectangle p2 = player2.getBounds();
@@ -611,13 +613,6 @@ public class Board extends JPanel implements ActionListener {
         Rectangle gunPower = gun.getBounds();
         Rectangle powerUp = currentPowerUp.getBounds();
 
-        for (int i = 0; i < maps.map1.length - 1; i++) {
-            for (int x = 0; x < maps.map1.length - 1; x++) {
-
-                
-
-            }
-        }
         for (Enemy en : enemies) {
             Rectangle e1 = en.getBounds();
             if (e1.intersects(player)) {
