@@ -58,6 +58,12 @@ public class Board extends JPanel implements ActionListener {
     Image one;
     Image two;
     Image three;
+    Image four;
+    Image five;
+    Image six;
+    Image seven;
+    Image eight;
+    Image nine;
     int input = 0;
     String tempInput;
     int enemiesDefeated = 20;
@@ -93,6 +99,8 @@ public class Board extends JPanel implements ActionListener {
       
     private Image explosion;
     private Image surrender;
+    private Image slidingTile;
+    private Image gameOver;
 
     public Board() {
         do {
@@ -113,18 +121,9 @@ public class Board extends JPanel implements ActionListener {
         powerUps[5] = new TimerPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
         powerUps[6] = new HardHatPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
         currentPowerUp = powerUps[rand.nextInt(7)];
-        enemy1 = new Enemy(400, grid, 1, this);
-        enemy2 = new Enemy(grid*6, grid, 2, this);
-        enemy3 = new Enemy(800, grid, 3, this);
-        enemy4 = new Enemy(0, grid, 4, this);
-        enemies.add(enemy1);
-        enemies.add(enemy2);
-        enemies.add(enemy3);
-        enemies.add(enemy4);
-
-        enemiesDefeated = enemiesDefeated - enemies.size();
-        player1 = new Player1(768 / 4 + 48, 720 - 48, this);
-        player2 = new Player2((768 / 4) - 144 +(768 / 2), 720 - 48, this);
+        
+        initializeEnemies();
+        
 
         star = new StarPowerUp(rand.nextInt(768) - 144, rand.nextInt(720) - 96);
         star2 = new StarPowerUp(rand.nextInt(768) - 144, rand.nextInt(720) - 96);
@@ -145,13 +144,23 @@ public class Board extends JPanel implements ActionListener {
         ImageIcon i10 = new ImageIcon(url + "one.png");
         ImageIcon i11 = new ImageIcon(url + "two.png");
         ImageIcon i12 = new ImageIcon(url + "three.png");
+        ImageIcon i25 = new ImageIcon(url + "four.png");
+        ImageIcon i26 = new ImageIcon(url + "five.png");
+        ImageIcon i27 = new ImageIcon(url + "six.png");
+        ImageIcon i28 = new ImageIcon(url + "seven.png");
+        ImageIcon i29 = new ImageIcon(url + "eight.png");
+        ImageIcon i30 = new ImageIcon(url + "nine.png");
         ImageIcon i13 = new ImageIcon(url + "BrickA1.png");
         ImageIcon i14 = new ImageIcon(url + "BrickA2.png");
         i15 = new ImageIcon(url + "water1.png");
         i16 = new ImageIcon(url + "water2.png");
         i17 = new ImageIcon(url + "water3.png");
         ImageIcon i18 = new ImageIcon (url + "emptySpacesWhatAreWeLivingFor.png");
+        ImageIcon i24 = new ImageIcon(url + "slidingtile.png");
+        ImageIcon i31 = new ImageIcon(url + "gameover.png");
         
+        gameOver = i31.getImage();
+        slidingTile = i24.getImage();
         surrender = i23.getImage();
         brickA1 = i13.getImage();
         brickA2 = i14.getImage();
@@ -160,6 +169,12 @@ public class Board extends JPanel implements ActionListener {
         one = i10.getImage();
         two = i11.getImage();
         three = i12.getImage();
+        four = i25.getImage();
+        five = i26.getImage();
+        six = i27.getImage();
+        seven = i28.getImage();
+        eight = i29.getImage();
+        nine = i30.getImage();
         blankGrey = i8.getImage();
         enemyIcon = i7.getImage();
         steel = i4.getImage();
@@ -174,6 +189,34 @@ public class Board extends JPanel implements ActionListener {
         playSound("Themes");
         //miniExplosionTimer = new Timer (1000,this);
         //miniExplosionTimer.start();
+
+    }
+    
+    public void initializeEnemies(){
+        enemy1 = new Enemy(400, grid, 1, this);
+        enemy2 = new Enemy(grid*6, grid, 2, this);
+        enemy3 = new Enemy(800, grid, 3, this);
+        enemy4 = new Enemy(0, grid, 4, this);
+        player1 = new Player1(768 / 4 + 48, 720 - 48, this);
+        player2 = new Player2((768 / 4) - 144 +(768 / 2), 720 - 48, this);
+        enemies.add(enemy1);
+        enemies.add(enemy2);
+        enemies.add(enemy3);
+        enemies.add(enemy4);
+
+        for(Enemy en: enemies){
+            en.setVisible(true);
+        }
+        enemiesDefeated = enemiesDefeated - enemies.size();
+    }
+    
+    public void gameOver(Graphics g) {
+        if(flagIsDestroyed){
+            eagle = i23.getImage();
+        }
+        g.drawImage(gameOver, (768 / 2)-96, 720/2 - 96, null);
+        player1.cantMove();
+        player2.cantMove();
 
     }
 
@@ -214,7 +257,7 @@ public class Board extends JPanel implements ActionListener {
     }
     public void map(Graphics g) throws IOException {
         if (initializeMap) {
-            if (input >= 1 && input < 36) {
+            if (input >= 0 && input < 36) {
 
                 currentMap = maps.getMapFromFile(input);
             }
@@ -279,7 +322,11 @@ public class Board extends JPanel implements ActionListener {
                     
                     if(newMap[i][x * 4 + y] == 5){
                         g.drawImage(water, x * 24 + 48, i * 24 + 48, null);
-                    }            
+                    }
+                    
+                    if(newMap[i][x * 4 + y] == 6){
+                        g.drawImage(slidingTile, x * 24 + 48, i * 24 + 48, null);
+                    }
                                     
                     
                 }
@@ -461,24 +508,31 @@ public class Board extends JPanel implements ActionListener {
         checkCollisions(player2);
         moveBullets(player1);
         moveBullets(player2);
-        player1.moveX();
-        player1.moveY();
-        player2.moveX();
-        player2.moveY();
+        if(player1.getVisible()== true || !flagIsDestroyed){
+            player1.moveX();
+            player1.moveY();  
+        }
+        if(player2.getVisible() == true || !flagIsDestroyed){
+            player2.moveX();
+            player2.moveY(); 
+        }
+        
 
         //map();
         repaint();
         if(enemies.isEmpty()){
             JOptionPane.showMessageDialog(null, "You've destroyed all enemies! You win!");
-            System.exit(0);
-        }
-        if(flagIsDestroyed){
-            //JOptionPane.showMessageDialog(null, "The enemy tanks destroyed your flag. You've lost!");
-            eagle = i23.getImage();
-            g.drawImage(surrender, (768/2)-48, 720-96, null);
             //System.exit(0);
-            
+            initializeMap = true;
+            initializeEnemies();
+            input++;
         }
+        
+        if(flagIsDestroyed || (player1.getVisible() == false && player2.getVisible() == false)){
+           gameOver(g); 
+        }
+        
+        
     }
 
     public void paint(Graphics g) {
@@ -554,17 +608,66 @@ public class Board extends JPanel implements ActionListener {
         if (input < 10) {
             g.drawImage(blankGrey, 768 - 72, 24 * 18 + 168, null);
         }
-        if (input == 0) {
-            g.drawImage(zero, 768 - 48, 24 * 18 + 168, null);
+        if(input/10 == 1){
+            g.drawImage(one, 768 - 72, 24 * 18 + 168, null);
         }
-        if (input == 1) {
+        else if(input/10 == 2){
+            g.drawImage(two, 768 - 72, 24 * 18 + 168, null);
+        }
+        else if(input/10 == 3){
+            g.drawImage(three, 768 - 72, 24 * 18 + 168, null);
+        }
+        else if(input/10 == 4){
+            g.drawImage(four, 768 - 72, 24 * 18 + 168, null);
+        }
+        else if(input/10 == 5){
+            g.drawImage(five, 768 - 72, 24 * 18 + 168, null);
+        }
+        else if(input/10 == 6){
+            g.drawImage(six, 768 - 72, 24 * 18 + 168, null);
+        }
+        else if(input/10 == 7){
+            g.drawImage(seven, 768 - 72, 24 * 18 + 168, null);
+        }
+        else if(input/10 == 8){
+            g.drawImage(eight, 768 - 72, 24 * 18 + 168, null);
+        }
+        else if(input/10 == 9){
+            g.drawImage(nine, 768 - 72, 24 * 18 + 168, null);
+        }
+        else{
+            g.drawImage(zero, 768 - 72, 24 * 18 + 168, null);
+        }
+        if (input % 10 == 0) {
+            g.drawImage(zero, 768 - 48, 24 * 18 + 168, null);
+            
+        }
+        if (input % 10 == 1) {
             g.drawImage(one, 768 - 48, 24 * 18 + 168, null);
         }
-        if (input == 2) {
+        if (input % 10 == 2) {
             g.drawImage(two, 768 - 48, 24 * 18 + 168, null);
         }
-        if (input == 3) {
+        if (input % 10 == 3) {
             g.drawImage(three, 768 - 48, 24 * 18 + 168, null);
+        }
+        if (input % 10 == 4) {
+            g.drawImage(four, 768 - 48, 24 * 18 + 168, null);
+        }
+        if (input % 10 == 5) {
+            g.drawImage(five, 768 - 48, 24 * 18 + 168, null);
+        }
+        if (input % 10 == 6) {
+            g.drawImage(six, 768 - 48, 24 * 18 + 168, null);
+        }
+        if (input % 10 == 7) {
+            g.drawImage(seven, 768 - 48, 24 * 18 + 168, null);
+        }
+        if (input % 10 == 8) {
+            g.drawImage(eight, 768 - 48, 24 * 18 + 168, null);
+        }
+        if (input % 10 == 9) {
+            g.drawImage(nine, 768 - 48, 24 * 18 + 168, null);
         }
     }
 
@@ -583,7 +686,7 @@ public class Board extends JPanel implements ActionListener {
         
         int entity = newMap[gridY][gridX];
         
-        return entity == BLANK_SPACE || entity == ENTITY_TREE;
+        return entity == BLANK_SPACE || entity == ENTITY_TREE || entity == SLIDING_TILE;
 
     }
 

@@ -55,7 +55,8 @@ public class Player extends Tank{
     
     public void lostALife(){
         if(lives <=0){
-            System.exit(0);
+            this.setVisible(false);
+            this.setDominantImage(empty);
         }
         if(lives > 0){
             lives--;
