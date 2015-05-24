@@ -293,6 +293,7 @@ public class Board extends JPanel implements ActionListener {
         if (flagIsDestroyed) {
             eagle = i23.getImage();
         }
+        // TODO check why this line  is so important
         g.drawImage(gameOver, (768 / 2) - 96, 720 / 2 - 96, null);
         player1.cantMove();
         if(twoPlayerGame == true){
