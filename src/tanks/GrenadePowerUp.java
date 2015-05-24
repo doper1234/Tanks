@@ -17,6 +17,11 @@ public class GrenadePowerUp extends PowerUp {
     public GrenadePowerUp(int x, int y) {
         super(x,y);
         this.powerUpImage = grenade;
+        powerUpSound = "GotStar";
+    }
+    @Override
+     public void doPowerUpThing(Player p, Enemy e){
+        e.setVisible(false);
     }
     
 }

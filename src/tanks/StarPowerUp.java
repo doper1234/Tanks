@@ -14,10 +14,17 @@ import javax.swing.ImageIcon;
  */
 public class StarPowerUp extends PowerUp{
     ImageIcon star = new ImageIcon(url + "star.png");
+    
     public StarPowerUp(int x, int y) {
         super(x, y);
         this.powerUpImage = star;
+        powerUpSound = "GotStar";
         
+    }
+    
+    @Override
+    public void doPowerUpThing(Player p, Enemy e){
+        p.setLevel(p.getLevel()+1);
     }
     
     

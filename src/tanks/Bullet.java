@@ -7,6 +7,10 @@
 package tanks;
 
 import java.awt.*;
+import java.io.File;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 /**
  *
@@ -62,9 +66,11 @@ public class Bullet {
         }
         if (x >  boardLimitX || x < boardLimitStartX){
             visible = false;
+           
         }
         if(y > boardLimitY || y < boardLimitStartY){
             visible = false;
+            
         }
     }
     public int getX(){
@@ -97,5 +103,7 @@ public class Bullet {
         
         return new Rectangle(x,y, 12, 12);
     }
+    
+    
             
 }

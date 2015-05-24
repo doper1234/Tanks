@@ -11,6 +11,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -32,7 +33,9 @@ public class MiniExplosion extends Entity implements ActionListener {
             miniExplosion1 = new ImageIcon(url + "miniExplosion1.png");
             miniExplosion2 = new ImageIcon(url + "miniExplosion2.png");
             miniExplosion3 = new ImageIcon(url + "miniExplosion3.png");
+            dominantImage = miniExplosion1.getImage();
             timer = new Timer(100,this);
+            timer.start();
  
         }
         
@@ -43,20 +46,27 @@ public class MiniExplosion extends Entity implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        dominantImage = miniExplosion1.getImage();
         
-        if (ticks== 1) {
+        //JOptionPane.showMessageDialog(null, ticks);
+        if (ticks== 0) {
             dominantImage = miniExplosion1.getImage();
         }
-        else if (ticks == 2) {
+        else if (ticks == 1) {
             dominantImage = miniExplosion2.getImage();
         }
-        else if (ticks == 3) {
+        else if (ticks == 2) {
             dominantImage = miniExplosion3.getImage();
-        } else {
-           // i = empty.getImage();
-            timer.stop();
+            
+        } else if(ticks == 3
+                ){
+           dominantImage = empty.getImage();
+           timer.stop();
+           
         }
         
+        ticks++;
+        
     }
+    
+    
 }

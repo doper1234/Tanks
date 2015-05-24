@@ -17,6 +17,8 @@ public class Player2 extends Player{
     public Player2(int x, int y, Board board){
         
         super(x, y, board);
+        spawnX = (768 / 4) - 144 +(768 / 2);
+        spawnY = 720 - 48;
         goLeft = KeyEvent.VK_A;
         goRight = KeyEvent.VK_D;
         goUp = KeyEvent.VK_W;

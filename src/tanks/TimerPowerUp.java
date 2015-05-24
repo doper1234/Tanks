@@ -17,6 +17,7 @@ public class TimerPowerUp extends PowerUp{
     public TimerPowerUp(int x, int y) {
         super(x,y);
         this.powerUpImage = timer;
+        powerUpSound = "GotStar";
     }
     
 }

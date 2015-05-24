@@ -6,6 +6,8 @@
 
 package tanks;
 
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -19,6 +21,7 @@ import javax.swing.Timer;
 public class PowerUp extends Entity implements ActionListener{
     Timer flickerTimer;
     Random rand = new Random();
+    String powerUpSound;
     ImageIcon powerUpImage;
     int ticks = 0;
     public PowerUp(int x, int y){
@@ -29,7 +32,20 @@ public class PowerUp extends Entity implements ActionListener{
         
     }
     
+    public void doPowerUpThing(Player p, Enemy e){
+        
+    }
     
+    public void doPowerUpThing(Graphics g, Board b){
+        
+    }
+    public void doPowerUpThing(Player p, Enemy e, Image im, int[][] map, Graphics g){
+        
+    }
+    
+    public void playPowerUpSound(){
+        playSound(powerUpSound);
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {

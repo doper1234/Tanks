@@ -17,6 +17,12 @@ class LifePowerUp extends PowerUp {
     public LifePowerUp(int x, int y) {
         super(x,y);
         this.powerUpImage = life;
+        powerUpSound = "GotLife";
+    }
+    
+    @Override
+    public void doPowerUpThing(Player p, Enemy e){
+        p.gotALife();
     }
     
 }

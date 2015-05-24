@@ -18,6 +18,7 @@ public class HardHatPowerUp extends PowerUp{
     public HardHatPowerUp(int x, int y) {
         super(x,y);
         this.powerUpImage = hardHat;
+        powerUpSound = "GotStar";
     }
     
     

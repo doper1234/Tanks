@@ -18,6 +18,11 @@ public class GunPowerUp extends PowerUp{
     public GunPowerUp(int x, int y) {
         super(x, y);
         this.powerUpImage = gun;
+        powerUpSound = "GotStar";
         
+    }
+    @Override
+    public void doPowerUpThing(Player p, Enemy e){
+        p.setLevel(4);
     }
 }
