@@ -7,8 +7,13 @@ package tanks;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
@@ -22,8 +27,11 @@ import javax.swing.*;
  *
  * @author Anna
  */
-public class Board extends JPanel implements ActionListener {
+public class Board extends JPanel implements ActionListener, Serializable {
 
+    
+    int keyPressed;
+    int keyReleased;
     Maps maps;
     int stageTime;
     int[][] mapFromFile;
@@ -153,7 +161,13 @@ public class Board extends JPanel implements ActionListener {
     boolean gameIsOver = false;
     boolean twoPlayerGame;
 
-    public Board(int howManyPlayers) {
+    Socket connectToServer;
+    BufferedReader reader;
+    PrintWriter writer;
+    Thread readerThread;
+    boolean playingOnline;
+
+    public Board(int howManyPlayers, boolean online) {
 //        do {
 //            tempInput = JOptionPane.showInputDialog("Enter Stage Number:");
 //        } while (tempInput == null);
@@ -161,13 +175,12 @@ public class Board extends JPanel implements ActionListener {
 //            System.exit(0);
 //        }
 //        input = Integer.parseInt(tempInput);
-
         if (howManyPlayers == 1) {
             twoPlayerGame = false;
         } else if (howManyPlayers == 2) {
             twoPlayerGame = true;
         }
-        
+
         maps = new Maps();
 
         powerUps[0] = new StarPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
@@ -188,9 +201,9 @@ public class Board extends JPanel implements ActionListener {
         hardHatPowerUp = powerUps[6];
 
         //initializeEnemies();
-        player1 = new Player1(0, 0, this);
+        player1 = new Player1(0, 0, this, online);
         if (twoPlayerGame == true) {
-            player2 = new Player2(0, 0, this);
+            player2 = new Player2(0, 0, this, online);
         }
 
         brick = new Bricks[12][13];
@@ -259,6 +272,118 @@ public class Board extends JPanel implements ActionListener {
         //miniExplosionTimer = new Timer (1000,this);
         //miniExplosionTimer.start();
 
+        //startThread(online);
+
+    }
+    
+//    public void go(){
+//        
+//        
+//    }
+//  
+//    public static void main(String[] args){
+//        Board b = new Board(1,true);
+//        b.go();
+//        
+//    }
+   
+//    public void startThread(boolean start) {
+//
+//        setUpNetWorking();
+//        playingOnline = true;
+//        readerThread = new Thread(new IncomingReader());
+//        readerThread.start();
+//
+//    }
+//
+//    public class IncomingReader implements Runnable {
+//
+//        @Override
+//        public void run() {
+//            String message;
+//            int player1;
+//            int x1;
+//            int y1;
+//            int player2 = 0;
+//            int x2 = -100;
+//            int y2 = -100;
+//            int p1 = 1;
+//            int p2 = 2;
+//            int playerNumber = 0;
+//            try {
+//
+//                while ((message = reader.readLine()) != null) {
+//
+//                    String[] result = reader.readLine().split(",");
+//                    player1 = Integer.parseInt(result[0]);
+//                    x1 = Integer.parseInt(result[1]);
+//                    y1 = Integer.parseInt(result[2]);
+//                    if (result.length > 3) {
+//
+//                        player2 = Integer.parseInt(result[3]);
+//                        x2 = Integer.parseInt(result[4]);
+//                        y2 = Integer.parseInt(result[5]);
+//
+//                    }
+//
+//                    System.out.println(message);
+//                    if (player1 == 1) {
+//
+////                        if (p1 == null) {
+////                            p1 = new Player(100, 100, 1);
+////                        }
+////                        p1.setX(x1);
+////                        p1.setY(y1);
+//                    }
+//                    if (message.equalsIgnoreCase("I am player 1")) {
+//                        playerNumber = 1;
+//                        //p1 = new Player(100, 100, playerNumber);
+//                    }
+//
+//                    if (player2 == 2) {
+////                        if (p2 == null) {
+////                            p2 = new Player(100, 100, 2);
+////                        }
+////                        p2.setX(x2);
+////                        p2.setY(y2);
+//
+//                    }
+//                    if (message.equalsIgnoreCase("I am player 2")) {
+//                        playerNumber = 2;
+//                        //p2 = new Player(100, 100, playerNumber);
+//
+//                    }
+//
+//                }
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//            }
+//        }
+//    }
+//
+//    public void setUpNetWorking() {
+//
+//        String iP = "192.168.1.102";
+//        try {
+//            connectToServer = new Socket(iP, 3074);
+//            InputStreamReader streamReader = new InputStreamReader(connectToServer.getInputStream());
+//            reader = new BufferedReader(streamReader);
+//            writer = new PrintWriter(connectToServer.getOutputStream());
+//            System.out.println("networking established");
+//            System.out.println(reader.readLine());
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            JOptionPane.showMessageDialog(null, "Error: Could not connect to server");
+//        }
+//
+//    }
+
+    public void createPlayer() {
+        player2 = new Player2(0, 0, this, true);
+        player2.setSpawning();
+        twoPlayerGame = true;
+
     }
 
     public void initializeEnemies() {
@@ -296,10 +421,9 @@ public class Board extends JPanel implements ActionListener {
         // TODO check why this line  is so important
         g.drawImage(gameOver, (768 / 2) - 96, 720 / 2 - 96, null);
         player1.cantMove();
-        if(twoPlayerGame == true){
+        if (twoPlayerGame == true) {
             player2.cantMove();
         }
-        
 
         gameIsOver = true;
 
@@ -623,10 +747,10 @@ public class Board extends JPanel implements ActionListener {
             stageStart = false;
             playSound("themes");
             player1.setSpawning();
-            if(twoPlayerGame == true){
+            if (twoPlayerGame == true) {
                 player2.setSpawning();
             }
-            
+
             spawnTicks = 0;
             System.out.println(points);
             powerUpNextStage = false;
@@ -655,20 +779,20 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void spawnNewEnemies() {
-        if(spawnTicks == 0){
+        if (spawnTicks == 0) {
             enemy1 = new Enemy(0, 0, 1, this);
             spawnEnemy(enemy1, 1);
             enemies.add(enemy1);
-            
+
             enemy2 = new Enemy(0, 0, 1, this);
             spawnEnemy(enemy2, 1);
             enemies.add(enemy2);
-            
+
             enemy3 = new Enemy(0, 0, 1, this);
             spawnEnemy(enemy3, 1);
             enemies.add(enemy3);
         }
-        
+
         if (spawnTicks == spawnRate) {
             enemy4 = new Enemy(0, 0, 1, this);
             spawnEnemy(enemy4, 1);
@@ -861,7 +985,7 @@ public class Board extends JPanel implements ActionListener {
                     && enemy18.getVisible() == false
                     && enemy19.getVisible() == false
                     && enemy20.getVisible() == false)) {
-            //JOptionPane.showMessageDialog(null, "You've destroyed all enemies! You win!");
+                //JOptionPane.showMessageDialog(null, "You've destroyed all enemies! You win!");
                 //System.exit(0);
                 stageStart = true;
                 startStage(g);
@@ -1041,21 +1165,39 @@ public class Board extends JPanel implements ActionListener {
 
     private class AL extends KeyAdapter {
 
+        
         public void keyReleased(KeyEvent e) {
-            player1.keyReleased(e);
-            if (twoPlayerGame == true) {
-                player2.keyReleased(e);
+
+            if (playingOnline == false) {
+                player1.keyReleased(e);
+                if (twoPlayerGame == true) {
+                    player2.keyReleased(e);
+                }
+            } else {
+                keyReleased = e.getKeyCode();
+                System.out.println("Released " + keyPressed);
+                
+                writer.println(keyReleased);
+                writer.flush();
             }
 
         }
 
         public void keyPressed(KeyEvent e) {
-            player1.keyPressed(e);
-            if (twoPlayerGame == true) {
-                player2.keyPressed(e);
+            keyPressed = e.getKeyCode();
+            System.out.println("Pressed " + keyPressed);
+            if (playingOnline == false) {
+                player1.keyPressed(e);
+                if (twoPlayerGame == true) {
+                    player2.keyPressed(e);
+                }
+            } else {
+                writer.println(keyPressed);
+                writer.flush();
             }
 
         }
+        
     }
 
     public void checkCollisions(Player p) {
@@ -1236,8 +1378,7 @@ public class Board extends JPanel implements ActionListener {
         enemy18.setVisible(false);
         enemy19.setVisible(false);
         enemy20.setVisible(false);
-        
-        
+
     }
 
     public void doPowerUpThing(PowerUp pow, Player p, Graphics g) {

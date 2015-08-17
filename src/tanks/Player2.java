@@ -13,16 +13,30 @@ import javax.swing.*;
  */
 public class Player2 extends Player{
     
-    
-    public Player2(int x, int y, Board board){
+    public Player2(int x, int y, Board board, boolean playingOnline){
+        
         
         super(x, y, board);
         spawnX = (768 / 4) - 144 +(768 / 2);
         spawnY = 720 - 48;
-        goLeft = KeyEvent.VK_A;
-        goRight = KeyEvent.VK_D;
-        goUp = KeyEvent.VK_W;
-        goDown = KeyEvent.VK_S;
+        
+        if (playingOnline == true) {
+            goLeft = KeyEvent.VK_LEFT;
+            goRight = KeyEvent.VK_RIGHT;
+            goUp = KeyEvent.VK_UP;
+            goDown = KeyEvent.VK_DOWN;
+            
+            
+        }
+        else{
+            goLeft = KeyEvent.VK_A;
+            goRight = KeyEvent.VK_D;
+            goUp = KeyEvent.VK_W;
+            goDown = KeyEvent.VK_S;
+            
+            
+            
+        }
         shoot = KeyEvent.VK_SPACE;
         up = new ImageIcon (url + "t2lvl1f.png");
         up2 = new ImageIcon( url +"t2lvl1f2.png");

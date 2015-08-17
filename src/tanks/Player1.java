@@ -11,7 +11,7 @@ import javax.swing.*;
 public class Player1 extends Player {
 
     
-    public Player1(int x, int y, Board board) {
+    public Player1(int x, int y, Board board, boolean playingOnline) {
         super(x, y, board);
         spawnX = 768 / 4 + 48;
         spawnY = 720 - 48;
@@ -19,7 +19,13 @@ public class Player1 extends Player {
         goRight = KeyEvent.VK_RIGHT;
         goUp = KeyEvent.VK_UP;
         goDown = KeyEvent.VK_DOWN;
-        shoot = KeyEvent.VK_ENTER;
+        if(playingOnline == true){
+            shoot = KeyEvent.VK_SPACE;
+        }
+        else{
+            shoot = KeyEvent.VK_ENTER;
+        }
+        
         up = new ImageIcon(url + "tlvl1f.png");
         up2 = new ImageIcon(url + "tlvl1f2.png");
         down = new ImageIcon(url + "tlvl1d.png");
