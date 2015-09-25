@@ -15,10 +15,10 @@ public class Player1 extends Player {
         super(x, y, board);
         spawnX = 768 / 4 + 48;
         spawnY = 720 - 48;
-        goLeft = KeyEvent.VK_LEFT;
-        goRight = KeyEvent.VK_RIGHT;
-        goUp = KeyEvent.VK_UP;
-        goDown = KeyEvent.VK_DOWN;
+        goLeftInput = KeyEvent.VK_LEFT;
+        goRightInput = KeyEvent.VK_RIGHT;
+        goUpInput = KeyEvent.VK_UP;
+        goDownInput = KeyEvent.VK_DOWN;
         if(playingOnline == true){
             shoot = KeyEvent.VK_SPACE;
         }
@@ -64,6 +64,8 @@ public class Player1 extends Player {
         setDominantImage(up);
 
     }
+    
+    
 
     
 

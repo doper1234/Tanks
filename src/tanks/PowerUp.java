@@ -42,6 +42,9 @@ public class PowerUp extends Entity implements ActionListener{
     public void doPowerUpThing(Player p, Enemy e, Image im, int[][] map, Graphics g){
         
     }
+    public void doPowerUpThing(Enemy e){
+        
+    }
     
     public void playPowerUpSound(){
         playSound(powerUpSound);

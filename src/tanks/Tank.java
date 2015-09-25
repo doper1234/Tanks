@@ -223,5 +223,22 @@ public abstract class Tank extends Entity  implements ActionListener{
             spawn++;
         }
     }
+    
+    public void setDirection(int d){
+        direction = d;
+    }
+    
+    public void setDominantImageUp(){
+        setDominantImage(up);
+    }
+    public void setDominantImageDown(){
+        setDominantImage(down);
+    }
+    public void setDominantImageLeft(){
+        setDominantImage(left);
+    }
+    public void setDominantImageRight(){
+        setDominantImage(right);
+    }
 
 }

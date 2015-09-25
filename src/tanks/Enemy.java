@@ -28,11 +28,14 @@ public class Enemy extends Tank implements ActionListener {
     static ArrayList enemyBullets;
     int spawns = 0;
     int spawnTime = 15;
+    boolean shooting = false;
+    boolean blinkingEnemy;
     
     
 
     public Enemy(int x, int y, int l, Board board) {
         super(x, y, board);
+        blinkingEnemy = false;
         spawnY = 48;
         enemyBullets = new ArrayList();
         direction = 0;
@@ -43,7 +46,7 @@ public class Enemy extends Tank implements ActionListener {
         down = new ImageIcon(url + "elvl1d.png");
         down2 = new ImageIcon(url + "elvl1d2.png");
         left = new ImageIcon(url + "elvl1l.png");
-        left2 = new ImageIcon(url + "elvl12.png");
+        left2 = new ImageIcon(url + "elvl1l2.png");
         right = new ImageIcon(url + "elvl1r.png");
         right2 = new ImageIcon(url + "elvl1r2.png");
         
@@ -53,7 +56,7 @@ public class Enemy extends Tank implements ActionListener {
         downA = new ImageIcon(url + "elvl2d.png");
         down2A = new ImageIcon(url + "elvl2d2.png");
         leftA = new ImageIcon(url + "elvl2l.png");
-        left2A = new ImageIcon(url + "elvl22.png");
+        left2A = new ImageIcon(url + "elvl2l2.png");
         rightA = new ImageIcon(url + "elvl2r.png");
         right2A = new ImageIcon(url + "elvl2r2.png");
         
@@ -62,7 +65,7 @@ public class Enemy extends Tank implements ActionListener {
         downB = new ImageIcon(url + "elvl3d.png");
         down2B = new ImageIcon(url + "elvl3d2.png");
         leftB = new ImageIcon(url + "elvl3l.png");
-        left2B = new ImageIcon(url + "elvl32.png");
+        left2B = new ImageIcon(url + "elvl3l2.png");
         rightB = new ImageIcon(url + "elvl3r.png");
         right2B = new ImageIcon(url + "elvl3r2.png");
         
@@ -71,7 +74,7 @@ public class Enemy extends Tank implements ActionListener {
         downC = new ImageIcon(url + "elvl4d.png");
         down2C = new ImageIcon(url + "elvl4d2.png");
         leftC = new ImageIcon(url + "elvl4l.png");
-        left2C = new ImageIcon(url + "elvl42.png");
+        left2C = new ImageIcon(url + "elvl4l2.png");
         rightC = new ImageIcon(url + "elvl4r.png");
         right2C = new ImageIcon(url + "elvl4r2.png");
         
@@ -88,6 +91,70 @@ public class Enemy extends Tank implements ActionListener {
             setDominantImage(downC);
         }
         
+    }
+    
+    public Enemy(int x, int y, int l, boolean blinking, Board board) {
+        super(x, y, board);
+        blinkingEnemy = blinking;
+        spawnY = 48;
+        enemyBullets = new ArrayList();
+        direction = 0;
+        //moveTimer = new Timer(1000, this);
+        level = l;
+        up = new ImageIcon (url + "belvl1f.png");
+        up2 = new ImageIcon(url + "belvl1f2.png");
+        down = new ImageIcon(url + "belvl1d.png");
+        down2 = new ImageIcon(url + "belvl1d2.png");
+        left = new ImageIcon(url + "belvl1l.png");
+        left2 = new ImageIcon(url + "belvl1l2.png");
+        right = new ImageIcon(url + "belvl1r.png");
+        right2 = new ImageIcon(url + "belvl1r2.png");
+        
+        
+        upA = new ImageIcon (url + "belvl2f.png");
+        up2A = new ImageIcon(url + "belvl2f2.png");
+        downA = new ImageIcon(url + "belvl2d.png");
+        down2A = new ImageIcon(url + "belvl2d2.png");
+        leftA = new ImageIcon(url + "belvl2l.png");
+        left2A = new ImageIcon(url + "belvl2l2.png");
+        rightA = new ImageIcon(url + "belvl2r.png");
+        right2A = new ImageIcon(url + "belvl2r2.png");
+        
+        upB = new ImageIcon (url + "belvl3f.png");
+        up2B = new ImageIcon(url + "belvl3f2.png");
+        downB = new ImageIcon(url + "belvl3d.png");
+        down2B = new ImageIcon(url + "belvl3d2.png");
+        leftB = new ImageIcon(url + "belvl3l.png");
+        left2B = new ImageIcon(url + "belvl3l2.png");
+        rightB = new ImageIcon(url + "belvl3r.png");
+        right2B = new ImageIcon(url + "belvl3r2.png");
+        
+        upC = new ImageIcon (url + "belvl4f.png");
+        up2C = new ImageIcon(url + "belvl4f2.png");
+        downC = new ImageIcon(url + "belvl4d.png");
+        down2C = new ImageIcon(url + "belvl4d2.png");
+        leftC = new ImageIcon(url + "belvl4l.png");
+        left2C = new ImageIcon(url + "belvl4l2.png");
+        rightC = new ImageIcon(url + "belvl4r.png");
+        right2C = new ImageIcon(url + "belvl4r2.png");
+        
+        if (l == 1) {
+            setDominantImage(down);
+        }
+        else if(l == 2){
+            setDominantImage(downA);
+        }
+        else if(l == 3){
+            setDominantImage(downB);
+        }
+        else{
+            setDominantImage(downC);
+        }
+        
+    }
+    
+    public boolean getBlinking(){
+        return blinkingEnemy;
     }
 
     public void moveEnemy() {
@@ -150,10 +217,12 @@ public class Enemy extends Tank implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == moveTimer) {
             //System.out.println("+");
+            shooting = false;
             int moves = move.nextInt(6);
             if (moves == 0 && this.getVisible() == true) {
                 fire(1);
                 playSound("Enemy1Shoot");
+                shooting = true;
             }
             if (moves == 3) {
                 dx = 0;
@@ -288,5 +357,11 @@ public class Enemy extends Tank implements ActionListener {
             
         //}
     }
+    
+    public boolean isShooting(){
+        return shooting;
+    }
+    
+    
 
 }

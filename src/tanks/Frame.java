@@ -14,6 +14,8 @@ import java.net.*;
 
 public class Frame extends JPanel implements ActionListener {
 
+    //static final String iP = "192.168.1.102";
+    static final String iP = "127.0.0.1";
     private Container c;
     private JFrame menuScreen;
     private final Timer timer;
@@ -22,10 +24,10 @@ public class Frame extends JPanel implements ActionListener {
     Socket connectToServer;
     int ticks = 0;
     String url = "src/tanks/";
-    ImageIcon titlecon = new ImageIcon(url + "Title.png");
-    ImageIcon selectIcon = new ImageIcon(url + "Select.png");
-    ImageIcon selectIcon2 = new ImageIcon(url + "Select2.png");
-    ImageIcon emptycon = new ImageIcon(url + "emptySelect.png");
+    ImageIcon titlecon = new ImageIcon(getClass().getResource("Title.png"));
+    ImageIcon selectIcon = new ImageIcon(getClass().getResource("Select.png"));
+    ImageIcon selectIcon2 = new ImageIcon(getClass().getResource("Select2.png"));
+    ImageIcon emptycon = new ImageIcon(getClass().getResource("emptySelect.png"));
 
     Image title = titlecon.getImage();
     Image select = selectIcon.getImage();
@@ -40,6 +42,14 @@ public class Frame extends JPanel implements ActionListener {
     PrintWriter writer;
     
     public Frame() {
+        JOptionPane.showMessageDialog(null, 
+                "Controls: " + "\n" + 
+                "Player 1 uses the arrow keys to move and enter to shoot" + "\n" +
+                "unless player 1 is playing online, then space is shoot" + "\n" + 
+                "\n" +
+                "Player 2 uses awds to move and space bar to shoot." + "\n" +
+                "Press escape to quit game at any time." + "\n" +
+                "Press ok when ready to go to the main menu");
         timer = new Timer(5, this);
     }
     
@@ -54,7 +64,7 @@ public class Frame extends JPanel implements ActionListener {
         //setUpNetWorking();
         readerThread = new Thread(new IncomingReader());
         readerThread.start();
-        System.out.println(readerThread.isAlive());
+        
     }
 
     @Override
@@ -160,7 +170,7 @@ public class Frame extends JPanel implements ActionListener {
     public void setBoard(int players) {
         menuScreen.dispose();
         frame = new JFrame();
-        frame.setUndecorated(true);
+        //frame.setUndecorated(true);
         b = new Board(players, playingOnline);
         frame.add(b);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -169,20 +179,6 @@ public class Frame extends JPanel implements ActionListener {
         frame.setLocationRelativeTo(null);
     }
 
-//    public void setUpNetWorking() {
-//
-//        String iP = "192.168.1.102";
-//        try {
-//            connectToServer = new Socket(iP, 3074);
-//            playingOnline = true;
-//            setBoard(1);
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            JOptionPane.showMessageDialog(null, "Error: Could not connect to server");
-//        }
-//        
-//    }
     
     public void startThread(boolean start) {
 
@@ -197,8 +193,9 @@ public class Frame extends JPanel implements ActionListener {
         public void run() {
             String message;
             int player1;
-            int x1;
-            int y1;
+            int keyPressed1;
+            int keyReleased1;
+            int pressedOrReleased;
             int player2 = 0;
             int x2 = -100;
             int y2 = -100;
@@ -207,16 +204,15 @@ public class Frame extends JPanel implements ActionListener {
             int playerNumber = 0;
             try {
 
-                System.out.println(readerThread.isAlive() + " before reader");
                 if (reader != null) {
                     while ((message = reader.readLine()) != null) {
 
+                        
                         System.out.println(readerThread.isAlive() + " after reader");
                         
                         String[] result = reader.readLine().split(",");
                         player1 = Integer.parseInt(result[0]);
-                        x1 = Integer.parseInt(result[1]);
-                        y1 = Integer.parseInt(result[2]);
+                        
                         if (result.length > 3) {
 
                             player2 = Integer.parseInt(result[3]);
@@ -225,6 +221,20 @@ public class Frame extends JPanel implements ActionListener {
 
                         }
 
+                        playerNumber = Integer.parseInt(result[0]);
+                        pressedOrReleased = Integer.parseInt(result[2]);
+                    
+                    if (pressedOrReleased == Board.KEYPRESSED) {
+                        
+                        keyPressed1 = Integer.parseInt(result[1]);
+                        
+                        System.out.println("Player " + playerNumber + " pressed " + keyPressed1);
+                    } 
+                    if (pressedOrReleased == Board.KEYRELEASED) {
+                        
+                        keyReleased1 = Integer.parseInt(result[1]);
+                        System.out.println("Player " + playerNumber + " released " + keyReleased1);
+                    }
                         System.out.println(message);
                         if (player1 == 1) {
 
@@ -265,22 +275,23 @@ public class Frame extends JPanel implements ActionListener {
 
     public void setUpNetWorking() {
 
-        String iP = "192.168.1.102";
+        
         try {
             connectToServer = new Socket(iP, 3074);
             InputStreamReader streamReader = new InputStreamReader(connectToServer.getInputStream());
             reader = new BufferedReader(streamReader);
             writer = new PrintWriter(connectToServer.getOutputStream());
-            System.out.println("networking established");
+            System.out.println("Networking established");
             playingOnline = true;
             setBoard(1);
-            System.out.println(readerThread.isAlive() + " board is created");
+            System.out.println("New Game Created");
             
             
 
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error: Could not connect to server");
+            
         }
 
     }

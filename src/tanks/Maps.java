@@ -29,8 +29,7 @@ public class Maps {
     public int[][] getMapFromFile(int mapNumber) throws FileNotFoundException, IOException{
         int[][]map = new int[26][26];
         Scanner s = new Scanner(new File(url + "Map" + mapNumber +".txt"));
-        System.out.println("Hello world!");
-        System.out.println(s.delimiter());
+        
 //              BufferedReader reader = new BufferedReader(new FileReader(new File(url + "Map" + mapNumber +".txt")));
 //		for (int i = 0; i < map.length; i++) {
 //		    String[] items = reader.readLine().split(" ");

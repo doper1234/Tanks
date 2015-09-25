@@ -19,5 +19,19 @@ public class TimerPowerUp extends PowerUp{
         this.powerUpImage = timer;
         powerUpSound = "GotStar";
     }
+    @Override
+    public void doPowerUpThing(Enemy e){
+        try{
+            
+            e.moveTimer.stop();
+        }
+        catch(Exception ex){
+            
+        }
+        
+        
+    }
+    
+    
     
 }

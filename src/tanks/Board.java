@@ -7,29 +7,20 @@ package tanks;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Serializable;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.*;
 import javax.swing.*;
 
-/**
- *
- * @author Anna
- */
-public class Board extends JPanel implements ActionListener, Serializable {
 
-    
+public class Board extends JPanel implements ActionListener {
+
+    String iP = Frame.iP;
+    Board board;
     int keyPressed;
     int keyReleased;
     Maps maps;
@@ -39,6 +30,8 @@ public class Board extends JPanel implements ActionListener, Serializable {
     Player1 player1;
     Player2 player2;
 
+    Enemy player1Online;
+    
     Enemy enemy1;
     Enemy enemy2;
     Enemy enemy3;
@@ -137,12 +130,12 @@ public class Board extends JPanel implements ActionListener, Serializable {
     ImageIcon i15;
     ImageIcon i16;
     ImageIcon i17;
-    ImageIcon i19 = new ImageIcon(url + "miniExplosion1.png");
-    ImageIcon i20 = new ImageIcon(url + "miniExplosion2.png");
-    ImageIcon i21 = new ImageIcon(url + "miniExplosion3.png");
-    ImageIcon i22 = new ImageIcon(url + "empty.png");
-    ImageIcon i23 = new ImageIcon(url + "surrender.png");
-    ImageIcon i32 = new ImageIcon(url + "stagescreen.png");
+    ImageIcon i19 = new ImageIcon(getClass().getResource("miniExplosion1.png"));
+    ImageIcon i20 = new ImageIcon(getClass().getResource( "miniExplosion2.png"));
+    ImageIcon i21 = new ImageIcon(getClass().getResource("miniExplosion3.png"));
+    ImageIcon i22 = new ImageIcon(getClass().getResource("empty.png"));
+    ImageIcon i23 = new ImageIcon(getClass().getResource("surrender.png"));
+    ImageIcon i32 = new ImageIcon(getClass().getResource("stagescreen.png"));
 
     private Image explosion;
     private Image surrender;
@@ -166,6 +159,10 @@ public class Board extends JPanel implements ActionListener, Serializable {
     PrintWriter writer;
     Thread readerThread;
     boolean playingOnline;
+    int yourPlayerNumber;
+    
+    static final int KEYPRESSED = 0;
+    static final int KEYRELEASED = 1;
 
     public Board(int howManyPlayers, boolean online) {
 //        do {
@@ -180,26 +177,30 @@ public class Board extends JPanel implements ActionListener, Serializable {
         } else if (howManyPlayers == 2) {
             twoPlayerGame = true;
         }
+        if(online == true){
+            go();
+        }
 
         maps = new Maps();
 
-        powerUps[0] = new StarPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
-        powerUps[1] = new GunPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
-        powerUps[2] = new LifePowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
-        powerUps[3] = new GrenadePowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
-        powerUps[4] = new ShovelPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
-        powerUps[5] = new TimerPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
-        powerUps[6] = new HardHatPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
-        powerUps[7] = new MarioPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
-        currentPowerUp = powerUps[7];
-        starPowerUp = powerUps[0];
-        gunPowerUp = powerUps[1];
-        lifePowerUp = powerUps[2];
-        grenadePowerUp = powerUps[3];
-        shovelPowerUp = powerUps[4];
-        timerPowerUp = powerUps[5];
-        hardHatPowerUp = powerUps[6];
+//        powerUps[0] = new StarPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+//        powerUps[1] = new GunPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+//        powerUps[2] = new LifePowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+//        powerUps[3] = new GrenadePowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+//        powerUps[4] = new ShovelPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+//        powerUps[5] = new TimerPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+//        powerUps[6] = new HardHatPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+//        powerUps[7] = new MarioPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+//        currentPowerUp = powerUps[7];
+//        starPowerUp = powerUps[0];
+//        gunPowerUp = powerUps[1];
+//        lifePowerUp = powerUps[2];
+//        grenadePowerUp = powerUps[3];
+//        shovelPowerUp = powerUps[4];
+//        timerPowerUp = powerUps[5];
+//        hardHatPowerUp = powerUps[6];
 
+        
         //initializeEnemies();
         player1 = new Player1(0, 0, this, online);
         if (twoPlayerGame == true) {
@@ -209,8 +210,8 @@ public class Board extends JPanel implements ActionListener, Serializable {
         brick = new Bricks[12][13];
         addKeyListener(new AL());
         setFocusable(true);
-        ImageIcon i = new ImageIcon(url + "background.png");
-        ImageIcon i2 = new ImageIcon(url + "boarder.png");
+        ImageIcon i = new ImageIcon(getClass().getResource("background.png"));
+        ImageIcon i2 = new ImageIcon(getClass().getResource( "boarder.png"));
 
         ImageIcon i3 = new ImageIcon(url + "eagle.png");
         ImageIcon i4 = new ImageIcon(url + "steelblock.png");
@@ -276,108 +277,190 @@ public class Board extends JPanel implements ActionListener, Serializable {
 
     }
     
-//    public void go(){
-//        
-//        
-//    }
-//  
-//    public static void main(String[] args){
-//        Board b = new Board(1,true);
-//        b.go();
-//        
-//    }
+    public void go(){
+        board = this;
+        startThread(true);
+        System.out.println(readerThread.isAlive());
+    }
+    
+    public void sendEnemyData(){
+        int enemyID = 10;
+        int eShoot = 0;
+        for(Enemy e: enemies){
+            if(e.isShooting()){
+                eShoot = 1;
+            }
+            System.out.println("Sent enemy " +enemyID);
+            writer.println(enemyID + "," + e.getX() + "," + e.getY() + "," + eShoot + "," + e.getDirection());
+            writer.flush();
+            enemyID++;
+            eShoot = 0;
+        }
+    }
+  
+    
    
-//    public void startThread(boolean start) {
-//
-//        setUpNetWorking();
-//        playingOnline = true;
-//        readerThread = new Thread(new IncomingReader());
-//        readerThread.start();
-//
-//    }
-//
-//    public class IncomingReader implements Runnable {
-//
-//        @Override
-//        public void run() {
-//            String message;
-//            int player1;
-//            int x1;
-//            int y1;
-//            int player2 = 0;
-//            int x2 = -100;
-//            int y2 = -100;
-//            int p1 = 1;
-//            int p2 = 2;
-//            int playerNumber = 0;
-//            try {
-//
-//                while ((message = reader.readLine()) != null) {
-//
-//                    String[] result = reader.readLine().split(",");
-//                    player1 = Integer.parseInt(result[0]);
-//                    x1 = Integer.parseInt(result[1]);
-//                    y1 = Integer.parseInt(result[2]);
-//                    if (result.length > 3) {
-//
-//                        player2 = Integer.parseInt(result[3]);
-//                        x2 = Integer.parseInt(result[4]);
-//                        y2 = Integer.parseInt(result[5]);
-//
-//                    }
-//
-//                    System.out.println(message);
-//                    if (player1 == 1) {
-//
-////                        if (p1 == null) {
-////                            p1 = new Player(100, 100, 1);
-////                        }
-////                        p1.setX(x1);
-////                        p1.setY(y1);
-//                    }
-//                    if (message.equalsIgnoreCase("I am player 1")) {
-//                        playerNumber = 1;
-//                        //p1 = new Player(100, 100, playerNumber);
-//                    }
-//
-//                    if (player2 == 2) {
-////                        if (p2 == null) {
-////                            p2 = new Player(100, 100, 2);
-////                        }
-////                        p2.setX(x2);
-////                        p2.setY(y2);
-//
-//                    }
-//                    if (message.equalsIgnoreCase("I am player 2")) {
-//                        playerNumber = 2;
-//                        //p2 = new Player(100, 100, playerNumber);
-//
-//                    }
-//
-//                }
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//    }
-//
-//    public void setUpNetWorking() {
-//
-//        String iP = "192.168.1.102";
-//        try {
-//            connectToServer = new Socket(iP, 3074);
-//            InputStreamReader streamReader = new InputStreamReader(connectToServer.getInputStream());
-//            reader = new BufferedReader(streamReader);
-//            writer = new PrintWriter(connectToServer.getOutputStream());
-//            System.out.println("networking established");
-//            System.out.println(reader.readLine());
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            JOptionPane.showMessageDialog(null, "Error: Could not connect to server");
-//        }
-//
-//    }
+    public void startThread(boolean start) {
+
+        setUpNetWorking();
+        playingOnline = true;
+        readerThread = new Thread(new IncomingReader());
+        readerThread.start();
+
+    }
+    
+    public void handleKeyPressed(int key, Player p){
+        
+        if (key == p.goUpInput) {
+            p.moveUp();
+        }
+        else if (key == p.goDownInput) {
+            p.moveDown();
+        }
+        else if (key == p.goLeftInput) {
+            p.moveLeft();
+        }
+        else if (key == p.goRightInput) {
+            p.moveRight();
+        }
+        else if(key == p.shoot){
+            p.fire(p.getLevel());
+            
+        }
+        if(key == KeyEvent.VK_ESCAPE){
+            System.exit(0);
+            
+        }
+    }
+    
+    public void handleKeyReleased(int key, Player p){
+        if (key == p.goUpInput || key == p.goDownInput || key == p.goLeftInput || key == p.goRightInput ) {
+            p.stopMoving();
+        }
+        
+    }
+
+    public class IncomingReader implements Runnable {
+
+        @Override
+        public void run() {
+            String message;
+            int playerNumber = 0;
+            int xLocation = 0;
+            int yLocation = 3;
+            int shoot = 10;
+            int direction = 0;
+            try {
+
+                while ((message = reader.readLine()) != null) {
+
+                    System.out.println(message);
+                    String[] result = reader.readLine().split(",");
+                    if(result.length == 5){
+                        System.out.println("length is 5");
+                        playerNumber = Integer.parseInt(result[0]);
+                        xLocation = Integer.parseInt(result[1]);
+                        yLocation = Integer.parseInt(result[2]);
+                        shoot = Integer.parseInt(result[3]);
+                        direction = Integer.parseInt(result[4]);
+                    }
+                    
+                    if (message.equalsIgnoreCase("you are player 1")) {
+                        yourPlayerNumber = 1;
+                        System.out.println("created player 1");
+                    }
+                    if (message.equalsIgnoreCase("you are player 2")) {
+                        yourPlayerNumber = 2;
+                        createPlayer();
+                        System.out.println("created player 2");
+                    }
+                    
+                    if(yourPlayerNumber == 1){
+                        if(playerNumber == 2){
+                            if(player2 == null){
+                                createPlayer();
+                            }
+                            updatePlayer(player2, xLocation, yLocation, shoot, direction);
+                        }
+                    }
+                    if(yourPlayerNumber == 2){
+        
+                        if(playerNumber == 1){
+                            updatePlayer(player1, xLocation, yLocation, shoot, direction);
+                        }
+                        if(playerNumber > 9){
+                           //recieveEnemies(playerNumber, xLocation, yLocation, shoot, direction); 
+                        }
+                        
+                    }
+                    
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
+    public void updatePlayer(Player p, int xLocation, int yLocation, int shoot, int direction){
+        
+        p.setX(xLocation);
+        p.setY(yLocation);
+        p.setDirection(direction);
+        if (shoot == 1) {
+            p.fire(p.getLevel());
+
+        }
+        if (direction == Player.UPWARDS_DIRECTION) {
+            p.setDominantImageUp();
+        }
+        if (direction == Player.DOWNWARDS_DIRECTION) {
+            p.setDominantImageDown();
+        }
+        if (direction == Player.LEFTWARDS_DIRECTION) {
+            p.setDominantImageLeft();
+        }
+        if (direction == Player.RIGHTWARDS_DIRECTION) {
+            p.setDominantImageRight();
+        }
+    }
+    
+    public void recieveEnemies(int en, int xLocation, int yLocation, int shoot, int direction){
+        int e = en - 10;
+        
+        if (e == 0){
+           if(enemy1 == null){
+               enemy1 = new Enemy(0, 0, 1, this);
+               enemies.add(enemy1);
+           } 
+           enemy1.setX(xLocation);
+           enemy1.setY(yLocation);
+           if(shoot == 1){
+               enemy1.fire(e);
+           }
+           
+           
+           
+        }
+        
+    }
+
+    public void setUpNetWorking() {
+
+        
+        try {
+            connectToServer = new Socket(iP, 3074);
+            InputStreamReader streamReader = new InputStreamReader(connectToServer.getInputStream());
+            reader = new BufferedReader(streamReader);
+            writer = new PrintWriter(connectToServer.getOutputStream());
+            System.out.println("Connected to game");
+            
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error: disconnected from the server");
+        }
+
+    }
 
     public void createPlayer() {
         player2 = new Player2(0, 0, this, true);
@@ -389,9 +472,9 @@ public class Board extends JPanel implements ActionListener, Serializable {
     public void initializeEnemies() {
 
         enemiesSpawned = 20;
-        enemy1 = new Enemy(0, 0, 1, this);
-        enemy2 = new Enemy(0, 0, 1, this);
-        enemy3 = new Enemy(0, 0, 1, this);
+        enemy1 = new Enemy(0, 0, 1, true, this);
+        enemy2 = new Enemy(0, 0, 1, true, this);
+        enemy3 = new Enemy(0, 0, 1, true, this);
         //enemy4 = new Enemy(0, 0, 1, this);
         //enemy5 = new Enemy(0, 0, 4, this);
 
@@ -604,11 +687,16 @@ public class Board extends JPanel implements ActionListener, Serializable {
 
                         bullets.remove(m);
                         //smallExplosion(getGraphics(), e.getX(), e.getY());
+                        if(e.getBlinking() == true && e.getVisible() == true){
+                            System.out.println("spawning powerup");
+                            spawnPowerUp();
+                        }
                         e.setVisible(false);
+                        
                         playSound("EnemyDestroyed");
                         enemiesDefeated++;
                         points = points + 100 * e.level;
-                        if (points >= 20000) {
+                        if (points == 20000) {
                             p.gotALife();
                             playSound("GotLife");
                         }
@@ -764,31 +852,56 @@ public class Board extends JPanel implements ActionListener, Serializable {
         if (e != null) {
             if (e.getVisible() == false) {
 
+                
                 enemies.remove(e);
+                
 
-//                smallExplosion(g, e.getX(), e.getY());
-//                if(setExplosion % 10 == 0){
-//                    
-//                    e.setX(1000);
-//                    e.setY(1000);
-//                }
+                smallExplosion(g, e.getX(), e.getY());
+                if(setExplosion % 10 == 0){
+                    
+                    e.setX(1000);
+                    e.setY(1000);
+                }
                 setExplosion++;
+                e = null;
 
             }
         }
     }
+    
+    public void spawnPowerUp(){
+        int go = 0;
+        if (go == 0) {
+
+            int random = rand.nextInt(7);
+            powerUps[0] = new StarPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+            powerUps[1] = new GunPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+            powerUps[2] = new LifePowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+            powerUps[3] = new GrenadePowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+            powerUps[4] = new ShovelPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+            powerUps[5] = new TimerPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+            powerUps[6] = new HardHatPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+            powerUps[7] = new MarioPowerUp(rand.nextInt(768) - 50, rand.nextInt(720) - 50);
+            currentPowerUp = powerUps[random];
+            currentPowerUp.x = rand.nextInt(768) - 50;
+            currentPowerUp.y = rand.nextInt(720) - 50;
+            go++;
+        }
+        
+        
+    }
 
     public void spawnNewEnemies() {
         if (spawnTicks == 0) {
-            enemy1 = new Enemy(0, 0, 1, this);
+            enemy1 = new Enemy(0, 0, 1, true, this);
             spawnEnemy(enemy1, 1);
             enemies.add(enemy1);
 
-            enemy2 = new Enemy(0, 0, 1, this);
+            enemy2 = new Enemy(0, 0, 1, true, this);
             spawnEnemy(enemy2, 1);
             enemies.add(enemy2);
 
-            enemy3 = new Enemy(0, 0, 1, this);
+            enemy3 = new Enemy(0, 0, 1, true, this);
             spawnEnemy(enemy3, 1);
             enemies.add(enemy3);
         }
@@ -1018,14 +1131,18 @@ public class Board extends JPanel implements ActionListener, Serializable {
                 refreshTank(en, g2d);
             }
             movingWater();
-            g2d.drawImage(starPowerUp.getDomiantImage(), starPowerUp.getX(), starPowerUp.getY(), null);
-            g2d.drawImage(gunPowerUp.getDomiantImage(), gunPowerUp.getX(), gunPowerUp.getY(), null);
-            g2d.drawImage(lifePowerUp.getDomiantImage(), lifePowerUp.getX(), lifePowerUp.getY(), null);
-            g2d.drawImage(grenadePowerUp.getDomiantImage(), grenadePowerUp.getX(), grenadePowerUp.getY(), null);
-            g2d.drawImage(shovelPowerUp.getDomiantImage(), shovelPowerUp.getX(), shovelPowerUp.getY(), null);
-            g2d.drawImage(timerPowerUp.getDomiantImage(), timerPowerUp.getX(), timerPowerUp.getY(), null);
-            g2d.drawImage(hardHatPowerUp.getDomiantImage(), hardHatPowerUp.getX(), hardHatPowerUp.getY(), null);
-            g2d.drawImage(currentPowerUp.getDomiantImage(), currentPowerUp.getX(), currentPowerUp.getY(), null);
+//            g2d.drawImage(starPowerUp.getDomiantImage(), starPowerUp.getX(), starPowerUp.getY(), null);
+//            g2d.drawImage(gunPowerUp.getDomiantImage(), gunPowerUp.getX(), gunPowerUp.getY(), null);
+//            g2d.drawImage(lifePowerUp.getDomiantImage(), lifePowerUp.getX(), lifePowerUp.getY(), null);
+//            g2d.drawImage(grenadePowerUp.getDomiantImage(), grenadePowerUp.getX(), grenadePowerUp.getY(), null);
+//            g2d.drawImage(shovelPowerUp.getDomiantImage(), shovelPowerUp.getX(), shovelPowerUp.getY(), null);
+//            g2d.drawImage(timerPowerUp.getDomiantImage(), timerPowerUp.getX(), timerPowerUp.getY(), null);
+//            g2d.drawImage(hardHatPowerUp.getDomiantImage(), hardHatPowerUp.getX(), hardHatPowerUp.getY(), null);
+            if(currentPowerUp != null){
+                
+                g2d.drawImage(currentPowerUp.getDomiantImage(), currentPowerUp.getX(), currentPowerUp.getY(), null);
+            
+            }
             paintLevelNumber(g2d, (768 - 72), (24 * 18 + 168), (768 - 48), input);
 
             for (int i = 0; i < enemiesSpawned; i++) {
@@ -1048,6 +1165,10 @@ public class Board extends JPanel implements ActionListener, Serializable {
 //            }
             if (!time.isRunning()) {
                 time.start();
+//                go();
+            }
+            if(yourPlayerNumber == 1){
+                //sendEnemyData();
             }
             ticks++;
         } catch (IOException ex) {
@@ -1165,39 +1286,74 @@ public class Board extends JPanel implements ActionListener, Serializable {
 
     private class AL extends KeyAdapter {
 
-        
+        int p1Shoot;
+        int p2Shoot;
+
         public void keyReleased(KeyEvent e) {
 
-            if (playingOnline == false) {
+            if(playingOnline == true){
+               if (yourPlayerNumber == 1) {
+                player1.keyReleased(e);
+            } else if (yourPlayerNumber == 2 && player2 != null) {
+                player2.keyReleased(e);
+            }
+            if (twoPlayerGame == true) {
+                player2.keyReleased(e);
+            }
+
+            keyReleased = e.getKeyCode(); 
+            }
+            else {
                 player1.keyReleased(e);
                 if (twoPlayerGame == true) {
                     player2.keyReleased(e);
                 }
-            } else {
-                keyReleased = e.getKeyCode();
-                System.out.println("Released " + keyPressed);
-                
-                writer.println(keyReleased);
-                writer.flush();
             }
+            
+            
+//                writer.println(yourPlayerNumber +"," + player1.getX() + "," + player1.getY());
+//                writer.flush();
 
         }
 
         public void keyPressed(KeyEvent e) {
             keyPressed = e.getKeyCode();
-            System.out.println("Pressed " + keyPressed);
-            if (playingOnline == false) {
+            p1Shoot = 0;
+            p2Shoot = 0;
+            if (playingOnline == true) {
+                if (yourPlayerNumber == 1) {
+                    player1.keyPressed(e);
+                    if (keyPressed == player1.shoot) {
+                        p1Shoot = 1;
+                    }
+                    writer.println(yourPlayerNumber + "," + player1.getX() + "," + player1.getY() + "," + p1Shoot + "," + player1.getDirection());
+                    writer.flush();
+                } else if (yourPlayerNumber == 2 && player2 != null) {
+                    player2.keyPressed(e);
+                    if (keyPressed == player2.shoot) {
+                        p2Shoot = 1;
+                    }
+                    System.out.println("my name is player 2 and I'm sending you my data");
+                    writer.println(yourPlayerNumber + "," + player2.getX() + "," + player2.getY() + "," + p2Shoot + "," + player2.getDirection());
+                    writer.flush();
+
+                }
+                writer.println(yourPlayerNumber + "," + player1.getX() + "," + player1.getY() + "," + p1Shoot + "," + player1.getDirection());
+            writer.flush();
+            }
+            else {
                 player1.keyPressed(e);
                 if (twoPlayerGame == true) {
+                    
                     player2.keyPressed(e);
                 }
-            } else {
-                writer.println(keyPressed);
-                writer.flush();
             }
 
+            
+            
+
         }
-        
+
     }
 
     public void checkCollisions(Player p) {
@@ -1258,14 +1414,22 @@ public class Board extends JPanel implements ActionListener, Serializable {
             }
 
         }
-        Rectangle starPower = starPowerUp.getBounds();
-        Rectangle gunPower = gunPowerUp.getBounds();
-        Rectangle lifePower = lifePowerUp.getBounds();
-        Rectangle grenadePower = grenadePowerUp.getBounds();
-        Rectangle shovelPower = shovelPowerUp.getBounds();
-        Rectangle timerPower = timerPowerUp.getBounds();
-        Rectangle hardHatPower = hardHatPowerUp.getBounds();
-        Rectangle powerUp = currentPowerUp.getBounds();
+////        Rectangle starPower = starPowerUp.getBounds();
+////        Rectangle gunPower = gunPowerUp.getBounds();
+////        Rectangle lifePower = lifePowerUp.getBounds();
+////        Rectangle grenadePower = grenadePowerUp.getBounds();
+////        Rectangle shovelPower = shovelPowerUp.getBounds();
+////        Rectangle timerPower = timerPowerUp.getBounds();
+//        Rectangle hardHatPower = hardHatPowerUp.getBounds();
+        Rectangle powerUp;
+        if (currentPowerUp != null) {
+            powerUp = currentPowerUp.getBounds();
+            if (player.intersects(powerUp) && currentPowerUp.getVisible() == true) {
+                doPowerUpThing(currentPowerUp, p, g);
+
+            }
+        }
+        
 
         for (Enemy en : enemies) {
             Rectangle e1 = en.getBounds();
@@ -1296,31 +1460,28 @@ public class Board extends JPanel implements ActionListener, Serializable {
             }
         }
 
-        if (player.intersects(powerUp) && currentPowerUp.getVisible() == true) {
-            doPowerUpThing(currentPowerUp, p, g);
-
-        }
-        if (player.intersects(starPower) && starPowerUp.getVisible() == true) {
-            doPowerUpThing(starPowerUp, p, g);
-        }
-        if (player.intersects(gunPower) && gunPowerUp.getVisible() == true) {
-            doPowerUpThing(gunPowerUp, p, g);
-        }
-        if (player.intersects(lifePower) && lifePowerUp.getVisible() == true) {
-            doPowerUpThing(lifePowerUp, p, g);
-        }
-        if (player.intersects(grenadePower) && grenadePowerUp.getVisible() == true) {
-            doPowerUpThing(grenadePowerUp, p, g);
-        }
-        if (player.intersects(shovelPower) && shovelPowerUp.getVisible() == true) {
-            doPowerUpThing(shovelPowerUp, p, g);
-        }
-        if (player.intersects(timerPower) && timerPowerUp.getVisible() == true) {
-            doPowerUpThing(timerPowerUp, p, g);
-        }
-        if (player.intersects(hardHatPower) && hardHatPowerUp.getVisible() == true) {
-            doPowerUpThing(hardHatPowerUp, p, g);
-        }
+        
+//        if (player.intersects(starPower) && starPowerUp.getVisible() == true) {
+//            doPowerUpThing(starPowerUp, p, g);
+//        }
+//        if (player.intersects(gunPower) && gunPowerUp.getVisible() == true) {
+//            doPowerUpThing(gunPowerUp, p, g);
+//        }
+//        if (player.intersects(lifePower) && lifePowerUp.getVisible() == true) {
+//            doPowerUpThing(lifePowerUp, p, g);
+//        }
+//        if (player.intersects(grenadePower) && grenadePowerUp.getVisible() == true) {
+//            doPowerUpThing(grenadePowerUp, p, g);
+//        }
+//        if (player.intersects(shovelPower) && shovelPowerUp.getVisible() == true) {
+//            doPowerUpThing(shovelPowerUp, p, g);
+//        }
+//        if (player.intersects(timerPower) && timerPowerUp.getVisible() == true) {
+//            doPowerUpThing(timerPowerUp, p, g);
+//        }
+//        if (player.intersects(hardHatPower) && hardHatPowerUp.getVisible() == true) {
+//            doPowerUpThing(hardHatPowerUp, p, g);
+//        }
 
     }
 
@@ -1378,6 +1539,7 @@ public class Board extends JPanel implements ActionListener, Serializable {
         enemy18.setVisible(false);
         enemy19.setVisible(false);
         enemy20.setVisible(false);
+        
 
     }
 
@@ -1388,7 +1550,17 @@ public class Board extends JPanel implements ActionListener, Serializable {
         } else if (pow == powerUps[7]) {
             doPowerUpMarioThing();
 
-        } else {
+        }
+        else if(pow == powerUps[5]){
+            
+            for(Enemy e: enemies){
+                pow.doPowerUpThing(e);
+            }
+            
+            
+            
+        }
+        else {
             for (Enemy en : enemies) {
                 pow.doPowerUpThing(p, en);
             }
