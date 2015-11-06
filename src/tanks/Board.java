@@ -17,7 +17,7 @@ import javax.sound.sampled.*;
 import javax.swing.*;
 
 
-public class Board extends JPanel implements ActionListener {
+public final class Board extends JPanel implements ActionListener {
 
     String iP = Frame.iP;
     Board board;
@@ -115,10 +115,10 @@ public class Board extends JPanel implements ActionListener {
     private final int spawn3X = 616;
 
     boolean initializeMap = true;
-    private Image brickA1;
-    private Image brickA2;
+    private final Image brickA1;
+    private final Image brickA2;
     private Image water;
-    private Image emptySpaces;
+    private final Image emptySpaces;
     int spawnTicks;
     int explosionTime = 0;
     boolean firstRunThrough = true;
@@ -138,10 +138,10 @@ public class Board extends JPanel implements ActionListener {
     ImageIcon i32 = new ImageIcon(getClass().getResource("stagescreen.png"));
 
     private Image explosion;
-    private Image surrender;
-    private Image slidingTile;
-    private Image gameOver;
-    private Image stageScreen = i32.getImage();
+    private final Image surrender;
+    private final Image slidingTile;
+    private final Image gameOver;
+    private final Image stageScreen = i32.getImage();
     private int spawn = 0;
     private int setExplosion = 0;
     PowerUp starPowerUp;
@@ -395,8 +395,7 @@ public class Board extends JPanel implements ActionListener {
                     }
                     
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (IOException | NumberFormatException ex) {
             }
         }
     }
@@ -456,7 +455,6 @@ public class Board extends JPanel implements ActionListener {
             
 
         } catch (Exception ex) {
-            ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error: disconnected from the server");
         }
 
@@ -682,7 +680,7 @@ public class Board extends JPanel implements ActionListener {
             Bullet m = (Bullet) bullets.get(i);
             if (m.getVisible() == true) {
                 m.move();
-                for (Enemy e : enemies) {
+                enemies.stream().map((e) -> {
                     if (m.getBounds().intersects(e.getBounds())) {
 
                         bullets.remove(m);
@@ -703,7 +701,8 @@ public class Board extends JPanel implements ActionListener {
                         //JOptionPane.showMessageDialog(null, enemiesDefeated + " enemies defeated");
 
                     }
-
+                    return e;
+                }).map((_item) -> {
                     if (newMap[m.getY() / 26][(m.getX() * 4) / 26] == 1) {
                         bullets.remove(m);
 
@@ -721,6 +720,8 @@ public class Board extends JPanel implements ActionListener {
                         }
 
                     }
+                    return _item;
+                }).map((_item) -> {
                     if (newMap[m.getY() / 26][(m.getX() * 4) / 26] == 2) {
                         bullets.remove(m);
                         if (p.getLevel() == 4) {
@@ -737,19 +738,18 @@ public class Board extends JPanel implements ActionListener {
                             playSound("BulletHitWall");
                         }
                     }
-                    if (newMap[m.getY() / 26][(m.getX() * 4) / 26] == 4
-                            || newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] == 4
-                            || newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26] == 4
-                            || newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26 + 1] == 4) {
-
-                        //Rectangle flagBounds = new Rectangle(m.getY() / 26, m.getX() / 26, eagle.getWidth(this), eagle.getHeight(this));
-                        bullets.remove(m);
-                        //JOptionPane.showMessageDialog(null, "You're fucked");
+                    return _item;
+                }).filter((_item) -> (newMap[m.getY() / 26][(m.getX() * 4) / 26] == 4
+                        || newMap[m.getY() / 26][(m.getX() * 4) / 26 + 1] == 4
+                        || newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26] == 4
+                        || newMap[m.getY() / 26 + 1][(m.getX() * 4) / 26 + 1] == 4)).map((_item) -> {
+                            //Rectangle flagBounds = new Rectangle(m.getY() / 26, m.getX() / 26, eagle.getWidth(this), eagle.getHeight(this));
+                            bullets.remove(m);
+                            return _item;
+                        }).forEach((_item) -> {
+                    //JOptionPane.showMessageDialog(null, "You're fucked");
                         flagIsDestroyed = true;
-
-                    }
-
-                }
+                });
 
             } else {
                 bullets.remove(m);
@@ -763,9 +763,8 @@ public class Board extends JPanel implements ActionListener {
     public void refreshTank(Tank t, Graphics g2d) {
         g2d.drawImage(t.getDomiantImage(), t.getX(), t.getY(), null);
         ArrayList bullets = Enemy.getBullets();
-        for (int i = 0; i < bullets.size(); i++) {
-            Bullet m = (Bullet) bullets.get(i);
-
+        for (Object bullet : bullets) {
+            Bullet m = (Bullet) bullet;
             if (m.getDirection() == 1) {
                 g2d.drawImage(m.getImage(), m.getX() + (t.getDomiantImage().getWidth(this) / 2) - 6, m.getY(), null);
             }
@@ -778,16 +777,14 @@ public class Board extends JPanel implements ActionListener {
             if (m.getDirection() == 4) {
                 g2d.drawImage(m.getImage(), m.getX() + t.getDomiantImage().getWidth(this), m.getY() + (t.getDomiantImage().getHeight(this) / 2) - 6, null);
             }
-
         }
     }
 
     public void refreshTank(Player t, Graphics g2d) {
         g2d.drawImage(t.getDomiantImage(), t.getX(), t.getY(), null);
         ArrayList bullets = Player.getBullets();
-        for (int i = 0; i < bullets.size(); i++) {
-            Bullet m = (Bullet) bullets.get(i);
-
+        for (Object bullet : bullets) {
+            Bullet m = (Bullet) bullet;
             if (m.getDirection() == 1) {
                 g2d.drawImage(m.getImage(), m.getX() + (t.getDomiantImage().getWidth(this) / 2) - 6, m.getY(), null);
             }
@@ -800,7 +797,6 @@ public class Board extends JPanel implements ActionListener {
             if (m.getDirection() == 4) {
                 g2d.drawImage(m.getImage(), m.getX() + t.getDomiantImage().getWidth(this), m.getY() + (t.getDomiantImage().getHeight(this) / 2) - 6, null);
             }
-
         }
     }
 
@@ -863,7 +859,6 @@ public class Board extends JPanel implements ActionListener {
                     e.setY(1000);
                 }
                 setExplosion++;
-                e = null;
 
             }
         }
@@ -1023,14 +1018,15 @@ public class Board extends JPanel implements ActionListener {
             checkEnemy(enemy19, g);
             checkEnemy(enemy20, g);
 
-            for (Enemy en : enemies) {
-                if (en.getVisible() == true) {
-                    moveBullets(en);
-                    en.moveX();
-                    en.moveY();
-                }
-
-            }
+            enemies.stream().filter((en) -> (en.getVisible() == true)).map((en) -> {
+                moveBullets(en);
+                return en;
+            }).map((en) -> {
+                en.moveX();
+                return en;
+            }).forEach((en) -> {
+                en.moveY();
+            });
             checkCollisions(player1);
             moveBullets(player1);
             if (twoPlayerGame == true) {
@@ -1108,6 +1104,7 @@ public class Board extends JPanel implements ActionListener {
 
     }
 
+    @Override
     public void paint(Graphics g) {
         try {
             super.paint(g);
@@ -1127,17 +1124,10 @@ public class Board extends JPanel implements ActionListener {
                 paintLives(player2, g2d);
 
             }
-            for (Enemy en : enemies) {
+            enemies.stream().forEach((en) -> {
                 refreshTank(en, g2d);
-            }
+            });
             movingWater();
-//            g2d.drawImage(starPowerUp.getDomiantImage(), starPowerUp.getX(), starPowerUp.getY(), null);
-//            g2d.drawImage(gunPowerUp.getDomiantImage(), gunPowerUp.getX(), gunPowerUp.getY(), null);
-//            g2d.drawImage(lifePowerUp.getDomiantImage(), lifePowerUp.getX(), lifePowerUp.getY(), null);
-//            g2d.drawImage(grenadePowerUp.getDomiantImage(), grenadePowerUp.getX(), grenadePowerUp.getY(), null);
-//            g2d.drawImage(shovelPowerUp.getDomiantImage(), shovelPowerUp.getX(), shovelPowerUp.getY(), null);
-//            g2d.drawImage(timerPowerUp.getDomiantImage(), timerPowerUp.getX(), timerPowerUp.getY(), null);
-//            g2d.drawImage(hardHatPowerUp.getDomiantImage(), hardHatPowerUp.getX(), hardHatPowerUp.getY(), null);
             if(currentPowerUp != null){
                 
                 g2d.drawImage(currentPowerUp.getDomiantImage(), currentPowerUp.getX(), currentPowerUp.getY(), null);
@@ -1289,6 +1279,7 @@ public class Board extends JPanel implements ActionListener {
         int p1Shoot;
         int p2Shoot;
 
+        @Override
         public void keyReleased(KeyEvent e) {
 
             if(playingOnline == true){
@@ -1316,6 +1307,7 @@ public class Board extends JPanel implements ActionListener {
 
         }
 
+        @Override
         public void keyPressed(KeyEvent e) {
             keyPressed = e.getKeyCode();
             p1Shoot = 0;
@@ -1431,7 +1423,7 @@ public class Board extends JPanel implements ActionListener {
         }
         
 
-        for (Enemy en : enemies) {
+        enemies.stream().forEach((en) -> {
             Rectangle e1 = en.getBounds();
             if (e1.intersects(player)) {
                 int tempX = p.dx;
@@ -1456,12 +1448,8 @@ public class Board extends JPanel implements ActionListener {
                     p.x = p.x + 2;
                     en.dx = 0;
                 }
-
             }
-        }
-
-        
-//        if (player.intersects(starPower) && starPowerUp.getVisible() == true) {
+        });//        if (player.intersects(starPower) && starPowerUp.getVisible() == true) {
 //            doPowerUpThing(starPowerUp, p, g);
 //        }
 //        if (player.intersects(gunPower) && gunPowerUp.getVisible() == true) {
@@ -1492,9 +1480,8 @@ public class Board extends JPanel implements ActionListener {
             clip.open(audioInputStream);
             clip.start();
 
-        } catch (Exception ex) {
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             System.out.println("Error with playing sound.");
-            ex.printStackTrace();
         }
     }
 
@@ -1553,17 +1540,17 @@ public class Board extends JPanel implements ActionListener {
         }
         else if(pow == powerUps[5]){
             
-            for(Enemy e: enemies){
+            enemies.stream().forEach((e) -> {
                 pow.doPowerUpThing(e);
-            }
+            });
             
             
             
         }
         else {
-            for (Enemy en : enemies) {
+            enemies.stream().forEach((en) -> {
                 pow.doPowerUpThing(p, en);
-            }
+            });
 
         }
         pow.setEmptyImage();

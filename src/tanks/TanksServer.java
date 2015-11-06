@@ -5,11 +5,9 @@
  */
 package tanks;
 
-import com.sun.glass.events.KeyEvent;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import javax.swing.*;
 
 public class TanksServer {
 
@@ -38,7 +36,6 @@ public class TanksServer {
                 reader = new BufferedReader(isReader);
 
             } catch (Exception ex) {
-                ex.printStackTrace();
             }
 
         }
@@ -69,8 +66,7 @@ public class TanksServer {
                     sendOutPlayerLocations();
 
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (IOException | NumberFormatException ex) {
                 System.exit(0);
             }
         }
@@ -151,7 +147,6 @@ public class TanksServer {
 //                }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -164,10 +159,9 @@ public class TanksServer {
 
         Iterator it = connectedPlayerStream.iterator();
 
-        for(int j = 0; j < connectedPlayerStream.size(); j ++) {
+        for (Object connectedPlayerStream1 : connectedPlayerStream) {
             try {
-                
-                PrintWriter writer = (PrintWriter) connectedPlayerStream.get(j);
+                PrintWriter writer = (PrintWriter) connectedPlayerStream1;
                 writer.println(p1 + "," + p1X + "," + p1Y + "," + p1Shoot + "," + p1Direction);
                 writer.flush();
 //                for (int i = 0; i < players.size(); i++) {
@@ -180,11 +174,8 @@ public class TanksServer {
 //                }
 //                writer.println(p1.getX() + "," + p1.getY());
 //                writer.flush();
-                
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            }catch (Exception ex) {
             }
         }
-
     }
 }

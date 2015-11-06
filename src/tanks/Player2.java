@@ -25,18 +25,14 @@ public class Player2 extends Player{
             goRightInput = KeyEvent.VK_RIGHT;
             goUpInput = KeyEvent.VK_UP;
             goDownInput = KeyEvent.VK_DOWN;
-            
-            
         }
         else{
             goLeftInput = KeyEvent.VK_A;
             goRightInput = KeyEvent.VK_D;
             goUpInput = KeyEvent.VK_W;
             goDownInput = KeyEvent.VK_S;
-            
-            
-            
         }
+        
         shoot = KeyEvent.VK_SPACE;
         up = new ImageIcon (url + "t2lvl1f.png");
         up2 = new ImageIcon( url +"t2lvl1f2.png");
@@ -75,8 +71,4 @@ public class Player2 extends Player{
         right2C = new ImageIcon(url + "t2lvl4r2.png");
         setDominantImage(up);
     }
-        
-    
-    
 }
-

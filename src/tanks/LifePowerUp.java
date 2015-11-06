@@ -23,6 +23,5 @@ class LifePowerUp extends PowerUp {
     @Override
     public void doPowerUpThing(Player p, Enemy e){
         p.gotALife();
-    }
-    
+    } 
 }

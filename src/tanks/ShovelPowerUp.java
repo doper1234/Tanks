@@ -22,6 +22,7 @@ public class ShovelPowerUp extends PowerUp{
         powerUpSound = "GotStar";
     }
     
+    @Override
     public void doPowerUpThing(Player p, Enemy e, Image im, int[][] map, Graphics g) {
         for (int i = 0; i < map.length; i++) {
             for (int x = 0; x < map.length; x++) {
@@ -41,14 +42,9 @@ public class ShovelPowerUp extends PowerUp{
                                map[i + 1][(x+2)*4 + y] = 2;
                            }
                         }
-                        
-                           
-                       
-                        
                     }
                 }
             }
         }
     }
-    
 }

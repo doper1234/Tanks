@@ -28,10 +28,5 @@ public class TimerPowerUp extends PowerUp{
         catch(Exception ex){
             
         }
-        
-        
     }
-    
-    
-    
 }

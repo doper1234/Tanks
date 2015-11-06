@@ -20,6 +20,4 @@ public class HardHatPowerUp extends PowerUp{
         this.powerUpImage = hardHat;
         powerUpSound = "GotStar";
     }
-    
-    
 }
