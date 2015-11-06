@@ -6,26 +6,20 @@
 
 package tanks;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 
 public class Maps {
     
-    public Maps(){
-        
-        
-        
-    }
     final String url = "src/tanks/Maps/";
     ArrayList<int[][]> maps = new ArrayList<>();
     
+    public Maps(){}
+ 
     public int[][] getMapFromFile(int mapNumber) throws FileNotFoundException, IOException{
         int[][]map = new int[26][26];
         Scanner s = new Scanner(new File(url + "Map" + mapNumber +".txt"));
@@ -51,5 +45,4 @@ public class Maps {
         
         return maps.get(mapNumber);
     }
-    
 }

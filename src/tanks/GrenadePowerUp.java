@@ -23,5 +23,4 @@ public class GrenadePowerUp extends PowerUp {
      public void doPowerUpThing(Player p, Enemy e){
         e.setVisible(false);
     }
-    
 }

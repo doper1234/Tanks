@@ -7,7 +7,6 @@ package tanks;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -262,7 +261,4 @@ public class Player extends Tank {
         arrowPressed = 0;
 
     }
-    
-    
-
 }

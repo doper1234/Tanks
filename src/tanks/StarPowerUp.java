@@ -19,16 +19,10 @@ public class StarPowerUp extends PowerUp{
         super(x, y);
         this.powerUpImage = star;
         powerUpSound = "GotStar";
-        
     }
     
     @Override
     public void doPowerUpThing(Player p, Enemy e){
         p.setLevel(p.getLevel()+1);
-    }
-    
-    
-    
-    
-    
+    } 
 }

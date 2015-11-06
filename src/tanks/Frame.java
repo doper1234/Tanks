@@ -266,8 +266,7 @@ public class Frame extends JPanel implements ActionListener {
                     }
                 }
                 
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (IOException | NumberFormatException ex) {
                 System.out.println(readerThread.isAlive() + "failed");
             }
         }
@@ -289,13 +288,8 @@ public class Frame extends JPanel implements ActionListener {
             
 
         } catch (Exception ex) {
-            ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error: Could not connect to server");
             
         }
-
     }
-
-
 }
-

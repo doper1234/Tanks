@@ -7,7 +7,6 @@ package tanks;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.Timer;
 
@@ -240,5 +239,4 @@ public abstract class Tank extends Entity  implements ActionListener{
     public void setDominantImageRight(){
         setDominantImage(right);
     }
-
 }

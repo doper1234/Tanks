@@ -197,7 +197,7 @@ public class Enemy extends Tank implements ActionListener {
     }
 
     public void spawnLocation(){
-        int x, y;
+        //int x, y;
         if(spawns % 3 == 0){
             spawnX = spawn1X;
             
@@ -361,7 +361,4 @@ public class Enemy extends Tank implements ActionListener {
     public boolean isShooting(){
         return shooting;
     }
-    
-    
-
 }

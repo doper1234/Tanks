@@ -32,19 +32,13 @@ public class PowerUp extends Entity implements ActionListener{
         
     }
     
-    public void doPowerUpThing(Player p, Enemy e){
-        
-    }
+    public void doPowerUpThing(Player p, Enemy e){}
     
-    public void doPowerUpThing(Graphics g, Board b){
-        
-    }
-    public void doPowerUpThing(Player p, Enemy e, Image im, int[][] map, Graphics g){
-        
-    }
-    public void doPowerUpThing(Enemy e){
-        
-    }
+    public void doPowerUpThing(Graphics g, Board b){}
+    
+    public void doPowerUpThing(Player p, Enemy e, Image im, int[][] map, Graphics g){}
+    
+    public void doPowerUpThing(Enemy e){}
     
     public void playPowerUpSound(){
         playSound(powerUpSound);
@@ -57,12 +51,12 @@ public class PowerUp extends Entity implements ActionListener{
             this.setEmptyImage();
             flickerTimer.stop();
         }
-         
         else if (ticks % 2 == 0){
-            setDominantImage(powerUpImage);
             
+            setDominantImage(powerUpImage);  
         }
         else{
+            
             this.setEmptyImage();
         }
                 

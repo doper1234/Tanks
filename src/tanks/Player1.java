@@ -9,8 +9,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Player1 extends Player {
-
-    
+ 
     public Player1(int x, int y, Board board, boolean playingOnline) {
         super(x, y, board);
         spawnX = 768 / 4 + 48;
@@ -62,11 +61,5 @@ public class Player1 extends Player {
         rightC = new ImageIcon(url + "tlvl4r.png");
         right2C = new ImageIcon(url + "tlvl4r2.png");
         setDominantImage(up);
-
     }
-    
-    
-
-    
-
 }
